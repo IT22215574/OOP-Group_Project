@@ -1,3 +1,4 @@
+/*new db connection */
 package com.primeestate.config;
 
 import io.github.cdimascio.dotenv.Dotenv;

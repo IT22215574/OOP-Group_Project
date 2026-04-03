@@ -9,11 +9,6 @@ import com.primeestate.model.User;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-/**
- * MODULE 2 – User CRUD
- * OOP - Inheritance: extends BaseDAO<User> (inherits getConnection(), mapRow() contract)
- * OOP - Polymorphism: overrides mapRow() to build User from ResultSet
- */
 
 public class UserDAO extends BaseDAO<User> {
 
