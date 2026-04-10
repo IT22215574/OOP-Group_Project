@@ -14,7 +14,11 @@ public class Agent extends BaseEntity {
     private int    experienceYears;
     private String propertySpecialization;
     private String availabilityStatus;
-
+/**
+ * MODULE 1 – Real Estate Agent
+ * OOP - Inheritance: extends BaseEntity (inherits id, createdAt, validate(), getDisplayName())
+ * OOP - Encapsulation: Used encapsulation to keep their fields private and expose them through getters and setters.
+ */
     public Agent() {}
 
     public Agent(int id, String fullName, String email, String contactNumber,
