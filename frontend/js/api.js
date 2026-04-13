@@ -1,6 +1,6 @@
 // Central API client for PrimeEstate backend
 const API_BASE = CONFIG.API_BASE;
-
+// Central API client for PrimeEstate backend
 const api = {
     async request(method, endpoint, body = null) {
         const options = {
