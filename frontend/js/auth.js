@@ -2,7 +2,7 @@
 async function initAuth() {
     const user = sessionStorage.getItem('user');
     if (!user) return;
-
+// Checks session and updates navbar auth links
     const parsed  = JSON.parse(user);
     const navAuth = document.getElementById('nav-auth');
     if (!navAuth) return;
