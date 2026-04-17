@@ -6,7 +6,7 @@ function propertyCard(p) {
         ? `LKR ${Number(p.price).toLocaleString()}/mo`
         : `LKR ${Number(p.price).toLocaleString()}`;
     const img = p.imageUrl || `https://placehold.co/400x220/1a3c5e/ffffff?text=${encodeURIComponent(p.category || 'Property')}`;
-
+// Renders a property card HTML string
     return `
     <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition group cursor-pointer"
          onclick="window.location.href='pages/property-detail.html?id=${p.id}'">
