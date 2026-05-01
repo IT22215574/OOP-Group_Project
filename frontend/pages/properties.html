@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Properties – PrimeEstate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { DEFAULT: '#1a3c5e', light: '#2d6a9f', dark: '#0f2540' },
+                        accent:  { DEFAULT: '#e8a020', light: '#f0b93a' }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <!-- Navbar -->
+    <nav class="bg-primary text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <a href="../index.html" class="flex items-center space-x-2">
+                    <span class="text-accent text-2xl font-bold">Prime</span>
+                    <span class="text-white text-2xl font-bold">Estate</span>
+                </a>
+                <div class="hidden md:flex items-center space-x-6 text-sm font-medium">
+                    <a href="../index.html"               class="hover:text-accent transition">Home</a>
+                    <a href="properties.html"             class="hover:text-accent transition" id="nav-properties">Properties</a>
+                    <a href="properties.html?type=sale"   class="hover:text-accent transition" id="nav-buy">Buy</a>
+                    <a href="properties.html?type=rent"   class="hover:text-accent transition" id="nav-rent">Rent</a>
+                </div>
+                <div class="flex items-center space-x-3" id="nav-auth">
+                    <a href="login.html"    class="text-sm border border-white px-4 py-1.5 rounded-full hover:bg-white hover:text-primary transition">Login</a>
+                    <a href="register.html" class="text-sm bg-accent text-white px-4 py-1.5 rounded-full hover:bg-accent-light transition">Register</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="bg-primary py-10 text-white text-center">
+        <h1 class="text-3xl font-bold mb-1">Properties</h1>
+        <p class="text-gray-300 text-sm">Browse our curated listings</p>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Filters -->
+        <div class="bg-white rounded-2xl shadow-sm p-5 mb-8 flex flex-wrap gap-3 items-end">
+            <div class="flex-1 min-w-[160px]">
+                <label class="block text-xs text-gray-500 mb-1 font-semibold uppercase">City</label>
+                <input id="filter-city" type="text" placeholder="Search city..."
+                       class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+            </div>
+            <div class="w-36">
+                <label class="block text-xs text-gray-500 mb-1 font-semibold uppercase">Type</label>
+                <select id="filter-type" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                    <option value="">All</option>
+                    <option value="sale">For Sale</option>
+                    <option value="rent">For Rent</option>
+                </select>
+            </div>
+            <div class="w-40">
+                <label class="block text-xs text-gray-500 mb-1 font-semibold uppercase">Category</label>
+                <select id="filter-category" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                    <option value="">All Categories</option>
+                    <option value="house">House</option>
+                    <option value="apartment">Apartment</option>
+                    <option value="villa">Villa</option>
+                    <option value="land">Land</option>
+                    <option value="commercial">Commercial</option>
+                </select>
+            </div>
+            <button onclick="applyFilters()" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition text-sm font-semibold">
+                Filter
+            </button>
+            <button onclick="resetFilters()" class="text-gray-500 border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-50 transition text-sm">
+                Reset
+            </button>
+        </div>
+
+        <!-- Results Info -->
+        <div class="flex items-center justify-between mb-5">
+            <p class="text-sm text-gray-500" id="results-info">Loading...</p>
+        </div>
+
+        <!-- Property Grid -->
+        <div id="property-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="col-span-full text-center py-16 text-gray-400">Loading properties...</div>
+        </div>
+
+        <!-- Pagination -->
+        <div id="pagination" class="flex justify-center mt-10 gap-2"></div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-primary-dark text-gray-400 text-center py-6 mt-12 text-sm">
+        &copy; 2025 PrimeEstate. All rights reserved.
+    </footer>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/properties.js"></script>
+</body>
+</html>

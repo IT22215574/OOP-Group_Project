@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Property Detail – PrimeEstate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { DEFAULT: '#1a3c5e', light: '#2d6a9f', dark: '#0f2540' },
+                        accent:  { DEFAULT: '#e8a020', light: '#f0b93a' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <nav class="bg-primary text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="../index.html" class="flex items-center space-x-1">
+                <span class="text-accent text-2xl font-bold">Prime</span>
+                <span class="text-white text-2xl font-bold">Estate</span>
+            </a>
+            <a href="properties.html" class="text-sm hover:text-accent transition">&larr; Back to Listings</a>
+        </div>
+    </nav>
+
+    <div class="max-w-6xl mx-auto px-4 py-10" id="property-detail">
+        <div class="text-center py-20 text-gray-400">Loading property...</div>
+    </div>
+
+    <footer class="bg-primary-dark text-gray-400 text-center py-6 mt-12 text-sm">
+        &copy; 2025 PrimeEstate. All rights reserved.
+    </footer>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script>
+        const id = new URLSearchParams(window.location.search).get('id');
+        const container = document.getElementById('property-detail');
+
+        async function loadDetail() {
+            if (!id) {
+                container.innerHTML = '<p class="text-center text-red-500 py-20">No property ID specified.</p>';
+                return;
+            }
+            try {
+                const res = await api.getProperty(id);
+                if (!res.success || !res.data) {
+                    container.innerHTML = '<p class="text-center text-red-500 py-20">Property not found.</p>';
+                    return;
+                }
+                const p     = res.data;
+                const price = p.type === 'rent'
+                    ? `LKR ${Number(p.price).toLocaleString()}/month`
+                    : `LKR ${Number(p.price).toLocaleString()}`;
+                const img   = p.imageUrl || `https://placehold.co/900x400/1a3c5e/ffffff?text=${encodeURIComponent(p.title)}`;
+
+                document.title = `${p.title} – PrimeEstate`;
+
+                container.innerHTML = `
+                <div class="mb-6">
+                    <img src="${img}" alt="${p.title}"
+                         class="w-full h-80 object-cover rounded-2xl shadow"
+                         onerror="this.src='https://placehold.co/900x400/1a3c5e/ffffff?text=PrimeEstate'" />
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Main Info -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <div>
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="text-xs px-3 py-1 rounded-full font-semibold ${p.type === 'rent' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}">
+                                    ${p.type === 'rent' ? 'For Rent' : 'For Sale'}
+                                </span>
+                                <span class="text-xs px-3 py-1 rounded-full bg-gray-100 text-gray-600 capitalize">${p.category}</span>
+                            </div>
+                            <h1 class="text-2xl font-bold text-primary mb-1">${p.title}</h1>
+                            <p class="text-gray-500 text-sm">${p.address}, ${p.city}${p.state ? ', ' + p.state : ''}${p.zipCode ? ' ' + p.zipCode : ''}</p>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-4 bg-gray-50 rounded-xl p-5 text-center">
+                            <div>
+                                <p class="text-2xl font-bold text-primary">${p.bedrooms}</p>
+                                <p class="text-xs text-gray-500 mt-1">Bedrooms</p>
+                            </div>
+                            <div>
+                                <p class="text-2xl font-bold text-primary">${p.bathrooms}</p>
+                                <p class="text-xs text-gray-500 mt-1">Bathrooms</p>
+                            </div>
+                            <div>
+                                <p class="text-2xl font-bold text-primary">${p.areaSqft.toLocaleString()}</p>
+                                <p class="text-xs text-gray-500 mt-1">Sq. Ft.</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h2 class="text-lg font-bold text-primary mb-3">Description</h2>
+                            <p class="text-gray-600 leading-relaxed text-sm">${p.description || 'No description provided.'}</p>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="space-y-5">
+                        <div class="bg-white rounded-2xl shadow p-6">
+                            <p class="text-3xl font-extrabold text-primary mb-1">${price}</p>
+                            <p class="text-xs text-gray-400 mb-5 capitalize">Status: <span class="font-semibold text-green-600">${p.status}</span></p>
+                            <button class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary-dark transition mb-3">
+                                Contact Agent
+                            </button>
+                            <button class="w-full border border-primary text-primary py-3 rounded-lg font-semibold hover:bg-primary hover:text-white transition">
+                                Schedule Visit
+                            </button>
+                        </div>
+
+                        <div class="bg-white rounded-2xl shadow p-6">
+                            <h3 class="text-sm font-bold text-primary mb-4">Send Inquiry</h3>
+                            <form class="space-y-3" onsubmit="return false;">
+                                <input type="text"  placeholder="Your name"
+                                       class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                                <input type="email" placeholder="Your email"
+                                       class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                                <textarea rows="3" placeholder="Your message..."
+                                          class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
+                                <button type="submit"
+                                        class="w-full bg-accent text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-accent-light transition">
+                                    Send Message
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>`;
+            } catch (e) {
+                container.innerHTML = '<p class="text-center text-red-500 py-20">Could not load property. Make sure the backend is running.</p>';
+            }
+        }
+
+        loadDetail();
+    </script>
+</body>
+</html>
