@@ -9,6 +9,7 @@ public class DBConnection {
 
     private static final Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
 
+    // Constructing the JDBC URL with fallback options from Dotenv
     private static final String URL = "jdbc:mysql://"
             + dotenv.get("DB_HOST", "localhost") + ":"
             + dotenv.get("DB_PORT", "3306") + "/"
