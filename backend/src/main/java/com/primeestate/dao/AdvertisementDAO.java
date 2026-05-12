@@ -14,6 +14,7 @@ import java.util.List;
  */
 public class AdvertisementDAO extends BaseDAO<Advertisement> {
 
+    // SQL query with LEFT JOIN to fetch agent names alongside advertisement data
     private static final String SELECT_WITH_JOIN =
         "SELECT a.*, ag.full_name AS agent_name " +
         "FROM advertisements a " +
