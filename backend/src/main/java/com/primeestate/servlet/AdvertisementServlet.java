@@ -30,11 +30,12 @@ import java.util.UUID;
  * Image upload: multipart/form-data, fields image1/image2/image3 (max 5MB each)
  */
 @WebServlet("/api/advertisements/*")
-@MultipartConfig(
-    fileSizeThreshold = 1024 * 1024,       // 1MB before writing to disk
-    maxFileSize       = 5 * 1024 * 1024,   // 5MB per image
-    maxRequestSize    = 20 * 1024 * 1024   // 20MB total
-)
+    // Configured for handling multipart property images (max 5MB per file, 20MB total)
+    @MultipartConfig(
+        fileSizeThreshold = 1024 * 1024,       // 1MB before writing to disk
+        maxFileSize       = 5 * 1024 * 1024,   // 5MB per image
+        maxRequestSize    = 20 * 1024 * 1024   // 20MB total
+    )
 public class AdvertisementServlet extends HttpServlet {
 
     private final AdvertisementDAO advertisementDAO = new AdvertisementDAO();
