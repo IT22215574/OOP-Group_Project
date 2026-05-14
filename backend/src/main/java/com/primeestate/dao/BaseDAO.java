@@ -16,6 +16,7 @@ import java.sql.SQLException;
  */
 public abstract class BaseDAO<T extends BaseEntity> implements CrudOperations<T> {
 
+    // Centralized connection management logic using singleton DBConnection
     protected Connection getConnection() throws SQLException {
         return DBConnection.getInstance().getConnection();
     }
