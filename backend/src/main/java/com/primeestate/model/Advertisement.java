@@ -19,6 +19,7 @@ public class Advertisement extends BaseEntity {
     private String     location;
     private String     description;
     private String     availabilityStatus;
+    // List of uploaded image paths (limited to a maximum of 3 per advertisement)
     private List<String> imagePaths;   // up to 3 image paths
 
     // Read-only join field
