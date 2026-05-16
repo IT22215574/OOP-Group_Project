@@ -7,16 +7,6 @@
 
     <display-name>PrimeEstate</display-name>
 
-    <!-- CORS Filter -->
-    <filter>
-        <filter-name>CORSFilter</filter-name>
-        <filter-class>com.primeestate.util.CORSFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>CORSFilter</filter-name>
-        <url-pattern>/api/*</url-pattern>
-    </filter-mapping>
-
     <session-config>
         <session-timeout>60</session-timeout>
         <cookie-config>
