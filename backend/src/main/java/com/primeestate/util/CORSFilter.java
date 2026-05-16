@@ -1,14 +1,14 @@
 package com.primeestate.util;
 
 import jakarta.servlet.*;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Set;
 
-@WebFilter(urlPatterns = "/api/*", asyncSupported = true)
 public class CORSFilter implements Filter {
+
+    public static final String FILTER_NAME = "CORSFilter";
 
     private static final Set<String> ALLOWED_ORIGINS = Set.of(
             "http://localhost",
@@ -25,8 +25,6 @@ public class CORSFilter implements Filter {
 
         String origin = req.getHeader("Origin");
 
-        // Vary must be set on every response so shared caches don't serve
-        // a cached response with a wrong (or missing) Allow-Origin header.
         res.addHeader("Vary", "Origin");
 
         if (origin != null && ALLOWED_ORIGINS.contains(origin)) {
@@ -41,10 +39,8 @@ public class CORSFilter implements Filter {
             res.setHeader("Access-Control-Max-Age", "3600");
         }
 
-        // Respond immediately to preflight; the browser checks these headers
-        // before sending the real request.
         if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
-            res.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            res.setStatus(HttpServletResponse.SC_OK);
             return;
         }
 
