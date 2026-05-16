@@ -1,5 +1,5 @@
 // Central API client for PrimeEstate backend
-const API_BASE = 'http://localhost:8080/primeestate/api';
+const API_BASE = CONFIG.API_BASE;
 
 const api = {
     async request(method, endpoint, body = null) {
