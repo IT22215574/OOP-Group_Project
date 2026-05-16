@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login – PrimeEstate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { DEFAULT: '#1a3c5e', light: '#2d6a9f', dark: '#0f2540' },
+                        accent:  { DEFAULT: '#e8a020', light: '#f0b93a' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <nav class="bg-primary text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="../index.html" class="flex items-center space-x-1">
+                <span class="text-accent text-2xl font-bold">Prime</span>
+                <span class="text-white text-2xl font-bold">Estate</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Login Card -->
+    <div class="flex-1 flex items-center justify-center px-4 py-12">
+        <div class="bg-white rounded-2xl shadow-lg w-full max-w-md p-8">
+            <div class="text-center mb-8">
+                <h1 class="text-2xl font-bold text-primary mb-1">Welcome Back</h1>
+                <p class="text-gray-500 text-sm">Sign in to your PrimeEstate account</p>
+            </div>
+
+            <div id="alert" class="hidden mb-4 p-3 rounded-lg text-sm"></div>
+
+            <form id="login-form" class="space-y-5">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Email Address</label>
+                    <input id="email" type="email" required placeholder="you@example.com"
+                           class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+                    <input id="password" type="password" required placeholder="••••••••"
+                           class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                </div>
+                <button type="submit"
+                        class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary-dark transition">
+                    Sign In
+                </button>
+            </form>
+
+            <p class="text-center text-sm text-gray-500 mt-6">
+                Don't have an account?
+                <a href="register.html" class="text-primary font-semibold hover:text-accent transition">Register</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email    = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const alert    = document.getElementById('alert');
+
+            try {
+                const res = await api.login(email, password);
+                if (res.success) {
+                    sessionStorage.setItem('user', JSON.stringify(res.data));
+                    window.location.href = '../index.html';
+                } else {
+                    showAlert(res.message || 'Login failed', 'error');
+                }
+            } catch (err) {
+                showAlert('Unable to connect. Is the server running?', 'error');
+            }
+        });
+
+        function showAlert(msg, type) {
+            const el = document.getElementById('alert');
+            el.textContent = msg;
+            el.className = `mb-4 p-3 rounded-lg text-sm ${type === 'error' ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-green-50 text-green-700 border border-green-200'}`;
+            el.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
