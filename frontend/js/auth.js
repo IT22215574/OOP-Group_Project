@@ -25,13 +25,27 @@ async function initAuth() {
         extraLinks = `<a href="${apptHref}" class="text-sm text-accent hover:text-accent-light transition font-medium">My Appointments</a>`;
     }
 
+    const profileHref = resolveProfilePath();
+    const initials    = parsed.fullName.trim().split(/\s+/).map(n => n[0]).join('').toUpperCase().slice(0, 2);
+
     navAuth.innerHTML = `
         ${extraLinks}
         <span class="text-sm text-gray-200">Hi, ${parsed.fullName.split(' ')[0]}</span>
+        <a href="${profileHref}" title="My Profile"
+           class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white text-xs font-bold transition flex-shrink-0">
+            ${initials}
+        </a>
         <button onclick="logout()"
                 class="text-sm border border-white px-4 py-1.5 rounded-full hover:bg-white hover:text-primary transition">
             Logout
         </button>`;
+}
+
+function resolveProfilePath() {
+    const path = window.location.pathname;
+    if (path.includes('/pages/admin/')) return '../profile.html';
+    if (path.includes('/pages/'))       return 'profile.html';
+    return 'pages/profile.html';
 }
 
 function resolveAdminPath() {

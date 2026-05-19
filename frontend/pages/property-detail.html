@@ -38,40 +38,6 @@
         &copy; 2025 PrimeEstate. All rights reserved.
     </footer>
 
-    <!-- Schedule Visit Modal -->
-    <div id="visit-modal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50">
-        <div class="flex items-center justify-center h-full px-4">
-        <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-bold text-primary">Schedule a Visit</h2>
-                <button onclick="closeVisitModal()" class="text-gray-400 hover:text-gray-600 text-3xl leading-none font-light">&times;</button>
-            </div>
-            <div id="visit-alert" class="hidden mb-4 p-3 rounded-lg text-sm"></div>
-            <form id="visit-form" class="space-y-4" onsubmit="submitVisit(event)">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Preferred Date <span class="text-red-500">*</span></label>
-                    <input type="date" id="visit-date" required
-                           class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Preferred Time <span class="text-red-500">*</span></label>
-                    <input type="time" id="visit-time" required
-                           class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
-                </div>
-                <div class="flex gap-3 pt-2">
-                    <button type="submit"
-                            class="flex-1 bg-primary text-white py-2.5 rounded-lg font-semibold hover:bg-primary-dark transition">
-                        Confirm Booking
-                    </button>
-                    <button type="button" onclick="closeVisitModal()"
-                            class="flex-1 border border-gray-200 text-gray-600 py-2.5 rounded-lg font-semibold hover:bg-gray-50 transition">
-                        Cancel
-                    </button>
-                </div>
-            </form>
-        </div>
-        </div>
-    </div>
 
     <script src="../js/config.js"></script>
     <script src="../js/api.js"></script>
@@ -158,27 +124,35 @@
                     <div class="space-y-5">
                         <div class="bg-white rounded-2xl shadow p-6">
                             <p class="text-3xl font-extrabold text-primary mb-1">${price}</p>
-                            <p class="text-xs text-gray-400 mb-5 capitalize">Status: <span class="font-semibold text-green-600">${p.status}</span></p>
-                            <button class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary-dark transition mb-3">
-                                Contact Agent
-                            </button>
-                            <button onclick="openVisitModal()" class="w-full border border-primary text-primary py-3 rounded-lg font-semibold hover:bg-primary hover:text-white transition">
-                                Schedule Visit
-                            </button>
+                            <p class="text-sm capitalize">Status: <span class="font-semibold text-green-600">${p.status}</span></p>
                         </div>
 
                         <div class="bg-white rounded-2xl shadow p-6">
-                            <h3 class="text-sm font-bold text-primary mb-4">Send Inquiry</h3>
-                            <form class="space-y-3" onsubmit="return false;">
-                                <input type="text"  placeholder="Your name"
+                            <h3 class="text-base font-bold text-primary mb-1">Schedule a Visit</h3>
+                            <p class="text-xs text-gray-400 mb-4">Book a visit and send a message to the agent in one step.</p>
+                            <div id="contact-alert" class="hidden mb-4 p-3 rounded-lg text-sm"></div>
+                            <form id="contact-form" class="space-y-3" onsubmit="submitContactForm(event)">
+                                <input type="text" id="cf-name" placeholder="Your name" required
                                        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
-                                <input type="email" placeholder="Your email"
+                                <input type="email" id="cf-email" placeholder="Your email" required
                                        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
-                                <textarea rows="3" placeholder="Your message..."
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-600 mb-1">Date <span class="text-red-500">*</span></label>
+                                        <input type="date" id="cf-date" required
+                                               class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-600 mb-1">Time <span class="text-red-500">*</span></label>
+                                        <input type="time" id="cf-time" required
+                                               class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                                    </div>
+                                </div>
+                                <textarea id="cf-message" rows="3" placeholder="Your message..."
                                           class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
-                                <button type="submit"
-                                        class="w-full bg-accent text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-accent-light transition">
-                                    Send Message
+                                <button type="submit" id="cf-btn"
+                                        class="w-full bg-primary text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-primary-dark transition">
+                                    Schedule Visit &amp; Send Message
                                 </button>
                             </form>
                         </div>
@@ -189,75 +163,57 @@
             }
         }
 
-        // ---- Schedule Visit Modal ----
-        function openVisitModal() {
-            if (!currentProperty) return;
-            const modal = document.getElementById('visit-modal');
-            modal.classList.remove('hidden');
-            // Set min date to today
-            document.getElementById('visit-date').min = new Date().toISOString().split('T')[0];
-            document.getElementById('visit-alert').classList.add('hidden');
-            document.getElementById('visit-form').reset();
+        // ---- Combined Contact & Visit Form ----
+        function initContactForm() {
+            const dateInput = document.getElementById('cf-date');
+            if (dateInput) dateInput.min = new Date().toISOString().split('T')[0];
         }
 
-        function closeVisitModal() {
-            document.getElementById('visit-modal').classList.add('hidden');
-        }
-
-        // Close modal on backdrop click
-        document.getElementById('visit-modal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('visit-modal') ||
-                e.target === document.getElementById('visit-modal').firstElementChild) {
-                closeVisitModal();
-            }
-        });
-
-        async function submitVisit(e) {
+        async function submitContactForm(e) {
             e.preventDefault();
-            const btn = e.target.querySelector('button[type=submit]');
+            const btn = document.getElementById('cf-btn');
             btn.disabled = true;
-            btn.textContent = 'Booking...';
+            btn.textContent = 'Submitting...';
 
             let userId;
             try {
                 const meRes = await api.getMe();
                 if (!meRes.success) {
-                    showVisitAlert('Please log in to schedule a visit.', 'error');
-                    btn.disabled = false; btn.textContent = 'Confirm Booking';
+                    showContactAlert('Please log in to schedule a visit.', 'error');
+                    btn.disabled = false; btn.textContent = 'Schedule Visit & Send Message';
                     return;
                 }
                 userId = meRes.data.id;
             } catch (_) {
-                showVisitAlert('Unable to verify login. Please try again.', 'error');
-                btn.disabled = false; btn.textContent = 'Confirm Booking';
+                showContactAlert('Unable to verify login. Please try again.', 'error');
+                btn.disabled = false; btn.textContent = 'Schedule Visit & Send Message';
                 return;
             }
 
-            const date          = document.getElementById('visit-date').value;
-            const time          = document.getElementById('visit-time').value;
-            const agentUserId   = currentProperty.agentId;
-
+            const agentUserId = currentProperty.agentId;
             if (!agentUserId || agentUserId <= 0) {
-                showVisitAlert('Unable to determine the agent for this property.', 'error');
-                btn.disabled = false; btn.textContent = 'Confirm Booking';
+                showContactAlert('Unable to determine the agent for this property.', 'error');
+                btn.disabled = false; btn.textContent = 'Schedule Visit & Send Message';
                 return;
             }
 
-            // properties.agent_id references users.id; appointments need agents.id — resolve it
             let agentId;
             try {
                 const agentRes = await api.getAgentByUserId(agentUserId);
                 if (!agentRes.success || !agentRes.data) {
-                    showVisitAlert('Could not find the agent profile for this property.', 'error');
-                    btn.disabled = false; btn.textContent = 'Confirm Booking';
+                    showContactAlert('Could not find the agent profile for this property.', 'error');
+                    btn.disabled = false; btn.textContent = 'Schedule Visit & Send Message';
                     return;
                 }
                 agentId = agentRes.data.id;
             } catch (_) {
-                showVisitAlert('Could not resolve agent. Please try again.', 'error');
-                btn.disabled = false; btn.textContent = 'Confirm Booking';
+                showContactAlert('Could not resolve agent. Please try again.', 'error');
+                btn.disabled = false; btn.textContent = 'Schedule Visit & Send Message';
                 return;
             }
+
+            const date = document.getElementById('cf-date').value;
+            const time = document.getElementById('cf-time').value;
 
             try {
                 const res = await api.scheduleVisit({
@@ -270,20 +226,21 @@
                 });
 
                 if (res.success) {
-                    showVisitAlert('Visit scheduled! The agent will confirm your appointment.', 'success');
-                    setTimeout(closeVisitModal, 2500);
+                    showContactAlert('Visit scheduled! The agent will confirm your appointment.', 'success');
+                    document.getElementById('contact-form').reset();
                 } else {
-                    showVisitAlert(res.message || 'Failed to schedule visit.', 'error');
-                    btn.disabled = false; btn.textContent = 'Confirm Booking';
+                    showContactAlert(res.message || 'Failed to schedule visit.', 'error');
                 }
             } catch (_) {
-                showVisitAlert('Connection error. Please try again.', 'error');
-                btn.disabled = false; btn.textContent = 'Confirm Booking';
+                showContactAlert('Connection error. Please try again.', 'error');
             }
+
+            btn.disabled = false; btn.textContent = 'Schedule Visit & Send Message';
         }
 
-        function showVisitAlert(msg, type) {
-            const el = document.getElementById('visit-alert');
+        function showContactAlert(msg, type) {
+            const el = document.getElementById('contact-alert');
+            if (!el) return;
             el.textContent = msg;
             el.className = `mb-4 p-3 rounded-lg text-sm ${type === 'error'
                 ? 'bg-red-50 text-red-700 border border-red-200'
@@ -291,7 +248,7 @@
             el.classList.remove('hidden');
         }
 
-        loadDetail();
+        loadDetail().then(initContactForm);
     </script>
 </body>
 </html>
