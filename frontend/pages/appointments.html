@@ -282,11 +282,11 @@
         }
 
         function openEditModal(appt) {
-            document.getElementById('edit-id').value          = appt.id;
-            document.getElementById('edit-date').value        = appt.appointmentDate ? appt.appointmentDate.substring(0, 10) : '';
-            document.getElementById('edit-time').value        = appt.appointmentTime ? appt.appointmentTime.substring(0, 5) : '';
+            document.getElementById('edit-id').value            = appt.id;
+            document.getElementById('edit-date').min            = new Date().toISOString().split('T')[0];
+            document.getElementById('edit-date').value          = appt.appointmentDate ? appt.appointmentDate.substring(0, 10) : '';
+            document.getElementById('edit-time').value          = appt.appointmentTime ? appt.appointmentTime.substring(0, 5) : '';
             document.getElementById('edit-property-type').value = appt.propertyType || '';
-            document.getElementById('edit-date').min          = new Date().toISOString().split('T')[0];
             hideAlert('edit-alert');
             document.getElementById('edit-modal').classList.remove('hidden');
         }
