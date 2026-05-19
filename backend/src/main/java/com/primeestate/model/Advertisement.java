@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * MODULE 4 – Property Advertisement
  * OOP - Inheritance: extends BaseEntity (inherits id, createdAt, validate(), getDisplayName())
- * OOP - Encapsulation: all fields private, exposed via getters/setters
+ * OOP - Encapsulation: Used encapsulation to keep their fields private and expose them through getters and setters.
  * Connects: agentId (Module 1); imagePaths up to 3 images stored in advertisement_images table
  */
 public class Advertisement extends BaseEntity {

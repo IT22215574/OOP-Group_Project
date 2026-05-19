@@ -3,7 +3,7 @@ package com.primeestate.model;
 /**
  * MODULE 1 – Real Estate Agent
  * OOP - Inheritance: extends BaseEntity (inherits id, createdAt, validate(), getDisplayName())
- * OOP - Encapsulation: all fields private, exposed via getters/setters
+ * OOP - Encapsulation: Used encapsulation to keep their fields private and expose them through getters and setters.
  */
 public class Agent extends BaseEntity {
 

@@ -6,7 +6,7 @@ import java.sql.Time;
 /**
  * MODULE 3 – Appointment
  * OOP - Inheritance: extends BaseEntity (inherits id, createdAt, validate(), getDisplayName())
- * OOP - Encapsulation: all fields private, exposed via getters/setters
+ * OOP - Encapsulation: Used encapsulation to keep their fields private and expose them through getters and setters.
  * Connects: userId (Module 2) → agentId (Module 1)
  */
 public class Appointment extends BaseEntity {

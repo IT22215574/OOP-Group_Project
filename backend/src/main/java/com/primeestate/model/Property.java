@@ -4,6 +4,10 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
+/**
+ * MODULE 5 – Property
+ * OOP - Encapsulation: Used encapsulation to keep their fields private and expose them through getters and setters.
+ */
 public class Property {
 
     private int          id;
