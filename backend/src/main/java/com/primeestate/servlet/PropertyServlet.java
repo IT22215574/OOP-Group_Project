@@ -10,6 +10,7 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +76,16 @@ public class PropertyServlet extends HttpServlet {
                 property.setAgentId((int) session.getAttribute("userId"));
             }
             int newId = propertyDAO.save(property);
+
+            // Persist all images to property_images table
+            List<String> allImages = new ArrayList<>();
+            if (property.getImageUrl() != null && !property.getImageUrl().isEmpty())
+                allImages.add(property.getImageUrl());
+            if (property.getAdditionalImages() != null)
+                allImages.addAll(property.getAdditionalImages());
+            if (!allImages.isEmpty())
+                propertyDAO.savePropertyImages(newId, allImages);
+
             Map<String, Object> result = new HashMap<>();
             result.put("id", newId);
             JsonResponse.send(res, 201, Map.of("success", true, "data", result));

@@ -55,9 +55,41 @@ public class PropertyDAO {
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) return mapRow(rs);
+            if (rs.next()) {
+                Property p = mapRow(rs);
+                p.setAdditionalImages(getPropertyImages(id));
+                return p;
+            }
         }
         return null;
+    }
+
+    public void savePropertyImages(int propertyId, List<String> imageUrls) throws SQLException {
+        String del = "DELETE FROM property_images WHERE property_id = ?";
+        String ins = "INSERT INTO property_images (property_id, image_url, is_primary) VALUES (?, ?, ?)";
+        try (PreparedStatement d = getConn().prepareStatement(del);
+             PreparedStatement i = getConn().prepareStatement(ins)) {
+            d.setInt(1, propertyId);
+            d.executeUpdate();
+            for (int idx = 0; idx < imageUrls.size(); idx++) {
+                i.setInt(1, propertyId);
+                i.setString(2, imageUrls.get(idx));
+                i.setBoolean(3, idx == 0);
+                i.addBatch();
+            }
+            i.executeBatch();
+        }
+    }
+
+    public List<String> getPropertyImages(int propertyId) throws SQLException {
+        String sql = "SELECT image_url FROM property_images WHERE property_id = ? ORDER BY is_primary DESC, id ASC";
+        List<String> images = new ArrayList<>();
+        try (PreparedStatement ps = getConn().prepareStatement(sql)) {
+            ps.setInt(1, propertyId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) images.add(rs.getString("image_url"));
+        }
+        return images;
     }
 
     public int countAll(String type, String city, String category) throws SQLException {

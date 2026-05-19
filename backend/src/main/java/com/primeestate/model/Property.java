@@ -2,26 +2,28 @@ package com.primeestate.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
 public class Property {
 
-    private int        id;
-    private String     title;
-    private String     description;
-    private BigDecimal price;
-    private String     type;        // sale | rent
-    private String     category;   // house | apartment | villa | land | commercial
-    private String     status;     // available | sold | rented
-    private int        bedrooms;
-    private int        bathrooms;
-    private double     areaSqft;
-    private String     address;
-    private String     city;
-    private String     state;
-    private String     zipCode;
-    private int        agentId;
-    private String     imageUrl;
-    private Timestamp  createdAt;
+    private int          id;
+    private String       title;
+    private String       description;
+    private BigDecimal   price;
+    private String       type;        // sale | rent
+    private String       category;   // house | apartment | villa | land | commercial
+    private String       status;     // available | sold | rented
+    private int          bedrooms;
+    private int          bathrooms;
+    private double       areaSqft;
+    private String       address;
+    private String       city;
+    private String       state;
+    private String       zipCode;
+    private int          agentId;
+    private String       imageUrl;
+    private Timestamp    createdAt;
+    private List<String> additionalImages; // from property_images table
 
     public Property() {}
 
@@ -41,8 +43,9 @@ public class Property {
     public String     getState()       { return state; }
     public String     getZipCode()     { return zipCode; }
     public int        getAgentId()     { return agentId; }
-    public String     getImageUrl()    { return imageUrl; }
-    public Timestamp  getCreatedAt()   { return createdAt; }
+    public String       getImageUrl()         { return imageUrl; }
+    public Timestamp    getCreatedAt()        { return createdAt; }
+    public List<String> getAdditionalImages() { return additionalImages; }
 
     // Setters
     public void setId(int id)                     { this.id          = id; }
@@ -60,6 +63,7 @@ public class Property {
     public void setState(String state)            { this.state       = state; }
     public void setZipCode(String zipCode)        { this.zipCode     = zipCode; }
     public void setAgentId(int agentId)           { this.agentId     = agentId; }
-    public void setImageUrl(String imageUrl)      { this.imageUrl    = imageUrl; }
-    public void setCreatedAt(Timestamp createdAt) { this.createdAt   = createdAt; }
+    public void setImageUrl(String imageUrl)                   { this.imageUrl         = imageUrl; }
+    public void setCreatedAt(Timestamp createdAt)             { this.createdAt         = createdAt; }
+    public void setAdditionalImages(List<String> imgs)        { this.additionalImages  = imgs; }
 }

@@ -38,11 +38,47 @@
         &copy; 2025 PrimeEstate. All rights reserved.
     </footer>
 
+    <!-- Schedule Visit Modal -->
+    <div id="visit-modal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50">
+        <div class="flex items-center justify-center h-full px-4">
+        <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold text-primary">Schedule a Visit</h2>
+                <button onclick="closeVisitModal()" class="text-gray-400 hover:text-gray-600 text-3xl leading-none font-light">&times;</button>
+            </div>
+            <div id="visit-alert" class="hidden mb-4 p-3 rounded-lg text-sm"></div>
+            <form id="visit-form" class="space-y-4" onsubmit="submitVisit(event)">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Preferred Date <span class="text-red-500">*</span></label>
+                    <input type="date" id="visit-date" required
+                           class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Preferred Time <span class="text-red-500">*</span></label>
+                    <input type="time" id="visit-time" required
+                           class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="submit"
+                            class="flex-1 bg-primary text-white py-2.5 rounded-lg font-semibold hover:bg-primary-dark transition">
+                        Confirm Booking
+                    </button>
+                    <button type="button" onclick="closeVisitModal()"
+                            class="flex-1 border border-gray-200 text-gray-600 py-2.5 rounded-lg font-semibold hover:bg-gray-50 transition">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+        </div>
+    </div>
+
     <script src="../js/config.js"></script>
     <script src="../js/api.js"></script>
     <script>
         const id = new URLSearchParams(window.location.search).get('id');
         const container = document.getElementById('property-detail');
+        let currentProperty = null;
 
         async function loadDetail() {
             if (!id) {
@@ -56,18 +92,32 @@
                     return;
                 }
                 const p     = res.data;
+                currentProperty = p;
                 const price = p.type === 'rent'
                     ? `LKR ${Number(p.price).toLocaleString()}/month`
                     : `LKR ${Number(p.price).toLocaleString()}`;
-                const img   = p.imageUrl || `https://placehold.co/900x400/1a3c5e/ffffff?text=${encodeURIComponent(p.title)}`;
+                const allImgs  = (p.additionalImages && p.additionalImages.length > 0)
+                    ? p.additionalImages
+                    : (p.imageUrl ? [p.imageUrl] : []);
+                const mainImg  = allImgs[0] || `https://placehold.co/900x400/1a3c5e/ffffff?text=${encodeURIComponent(p.title)}`;
+                const thumbsHtml = allImgs.length > 1
+                    ? `<div class="flex gap-2 mt-3 overflow-x-auto pb-1">
+                        ${allImgs.map((u, i) => `
+                        <img src="${u}" alt="Photo ${i+1}"
+                             onclick="document.getElementById('main-prop-img').src='${u}'"
+                             class="h-16 w-24 flex-shrink-0 object-cover rounded-lg border-2 ${i === 0 ? 'border-primary' : 'border-transparent'} hover:border-primary cursor-pointer transition"
+                             onerror="this.style.display='none'" />`).join('')}
+                       </div>`
+                    : '';
 
                 document.title = `${p.title} – PrimeEstate`;
 
                 container.innerHTML = `
                 <div class="mb-6">
-                    <img src="${img}" alt="${p.title}"
+                    <img id="main-prop-img" src="${mainImg}" alt="${p.title}"
                          class="w-full h-80 object-cover rounded-2xl shadow"
                          onerror="this.src='https://placehold.co/900x400/1a3c5e/ffffff?text=PrimeEstate'" />
+                    ${thumbsHtml}
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <!-- Main Info -->
@@ -112,7 +162,7 @@
                             <button class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary-dark transition mb-3">
                                 Contact Agent
                             </button>
-                            <button class="w-full border border-primary text-primary py-3 rounded-lg font-semibold hover:bg-primary hover:text-white transition">
+                            <button onclick="openVisitModal()" class="w-full border border-primary text-primary py-3 rounded-lg font-semibold hover:bg-primary hover:text-white transition">
                                 Schedule Visit
                             </button>
                         </div>
@@ -137,6 +187,92 @@
             } catch (e) {
                 container.innerHTML = '<p class="text-center text-red-500 py-20">Could not load property. Make sure the backend is running.</p>';
             }
+        }
+
+        // ---- Schedule Visit Modal ----
+        function openVisitModal() {
+            if (!currentProperty) return;
+            const modal = document.getElementById('visit-modal');
+            modal.classList.remove('hidden');
+            // Set min date to today
+            document.getElementById('visit-date').min = new Date().toISOString().split('T')[0];
+            document.getElementById('visit-alert').classList.add('hidden');
+            document.getElementById('visit-form').reset();
+        }
+
+        function closeVisitModal() {
+            document.getElementById('visit-modal').classList.add('hidden');
+        }
+
+        // Close modal on backdrop click
+        document.getElementById('visit-modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('visit-modal') ||
+                e.target === document.getElementById('visit-modal').firstElementChild) {
+                closeVisitModal();
+            }
+        });
+
+        async function submitVisit(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type=submit]');
+            btn.disabled = true;
+            btn.textContent = 'Booking...';
+
+            let userId;
+            try {
+                const meRes = await api.getMe();
+                if (!meRes.success) {
+                    showVisitAlert('Please log in to schedule a visit.', 'error');
+                    btn.disabled = false; btn.textContent = 'Confirm Booking';
+                    return;
+                }
+                userId = meRes.data.id;
+            } catch (_) {
+                showVisitAlert('Unable to verify login. Please try again.', 'error');
+                btn.disabled = false; btn.textContent = 'Confirm Booking';
+                return;
+            }
+
+            const date    = document.getElementById('visit-date').value;
+            const time    = document.getElementById('visit-time').value;
+            const agentId = currentProperty.agentId;
+
+            if (!agentId || agentId <= 0) {
+                showVisitAlert('Unable to determine the agent for this property.', 'error');
+                btn.disabled = false; btn.textContent = 'Confirm Booking';
+                return;
+            }
+
+            try {
+                const res = await api.scheduleVisit({
+                    userId:            userId,
+                    agentId:           agentId,
+                    appointmentDate:   date,
+                    appointmentTime:   time + ':00',
+                    propertyType:      currentProperty.category,
+                    appointmentStatus: 'pending'
+                });
+
+                if (res.success) {
+                    showVisitAlert('Visit scheduled! The agent will confirm your appointment.', 'success');
+                    setTimeout(closeVisitModal, 2500);
+                } else {
+                    showVisitAlert(res.message || 'Failed to schedule visit.', 'error');
+                    btn.disabled = false; btn.textContent = 'Confirm Booking';
+                }
+            } catch (_) {
+                showVisitAlert('Connection error. Please try again.', 'error');
+                btn.disabled = false; btn.textContent = 'Confirm Booking';
+            }
+        }
+
+        function showVisitAlert(msg, type) {
+            const el = document.getElementById('visit-alert');
+            el.textContent = msg;
+            el.className = `mb-4 p-3 rounded-lg text-sm ${type === 'error'
+                ? 'bg-red-50 text-red-700 border border-red-200'
+                : 'bg-green-50 text-green-700 border border-green-200'}`;
+            el.classList.remove('hidden');
         }
 
         loadDetail();

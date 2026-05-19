@@ -16,6 +16,7 @@
 /Applications/XAMPP/xamppfiles/htdocs/OOP-Group_Project/backend/src/main/java/com/primeestate/servlet/AgentServlet.java
 /Applications/XAMPP/xamppfiles/htdocs/OOP-Group_Project/backend/src/main/java/com/primeestate/servlet/AppointmentServlet.java
 /Applications/XAMPP/xamppfiles/htdocs/OOP-Group_Project/backend/src/main/java/com/primeestate/servlet/AuthServlet.java
+/Applications/XAMPP/xamppfiles/htdocs/OOP-Group_Project/backend/src/main/java/com/primeestate/servlet/ImageUploadServlet.java
 /Applications/XAMPP/xamppfiles/htdocs/OOP-Group_Project/backend/src/main/java/com/primeestate/servlet/PropertyServlet.java
 /Applications/XAMPP/xamppfiles/htdocs/OOP-Group_Project/backend/src/main/java/com/primeestate/servlet/UserServlet.java
 /Applications/XAMPP/xamppfiles/htdocs/OOP-Group_Project/backend/src/main/java/com/primeestate/util/CORSFilter.java
