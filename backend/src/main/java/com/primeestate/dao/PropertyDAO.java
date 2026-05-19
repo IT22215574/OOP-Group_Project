@@ -155,6 +155,22 @@ public class PropertyDAO {
         }
     }
 
+    // Returns ALL listings (any status) for an agent's own dashboard
+    public List<Property> findByAgentId(int agentId) throws SQLException {
+        String sql = "SELECT * FROM properties WHERE agent_id = ? ORDER BY created_at DESC";
+        List<Property> list = new ArrayList<>();
+        try (PreparedStatement ps = getConn().prepareStatement(sql)) {
+            ps.setInt(1, agentId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Property p = mapRow(rs);
+                p.setAdditionalImages(getPropertyImages(p.getId()));
+                list.add(p);
+            }
+        }
+        return list;
+    }
+
     public boolean delete(int id) throws SQLException {
         String sql = "DELETE FROM properties WHERE id = ?";
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {

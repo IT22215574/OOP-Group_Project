@@ -173,14 +173,26 @@
                 window.location.href = 'login.html?redirect=agent-appointments.html';
                 return;
             }
-            const user = JSON.parse(userData);
+            let user = JSON.parse(userData);
             if (user.role !== 'agent') {
                 window.location.href = user.role === 'buyer' ? 'appointments.html' : '../index.html';
                 return;
             }
+            // agentId may be absent if user logged in before this feature was deployed — resolve it now
             if (!user.agentId) {
-                showEmpty('Agent profile not linked. Please log out and log in again.');
-                return;
+                try {
+                    const agentRes = await api.getAgentByUserId(user.id);
+                    if (agentRes.success && agentRes.data) {
+                        user.agentId = agentRes.data.id;
+                        sessionStorage.setItem('user', JSON.stringify(user));
+                    } else {
+                        showEmpty('Agent profile not found. Please log out and log in again.');
+                        return;
+                    }
+                } catch (_) {
+                    showEmpty('Could not connect to server.');
+                    return;
+                }
             }
             await loadAppointments(user.agentId);
         }

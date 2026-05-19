@@ -38,6 +38,14 @@ public class PropertyServlet extends HttpServlet {
                 return;
             }
 
+            // GET /api/properties?agentId=N  – agent's own listings (all statuses)
+            String agentIdParam = req.getParameter("agentId");
+            if (agentIdParam != null) {
+                List<Property> agentProps = propertyDAO.findByAgentId(Integer.parseInt(agentIdParam));
+                JsonResponse.success(res, agentProps);
+                return;
+            }
+
             // GET /api/properties?type=sale&city=Colombo&category=house&page=1
             String type     = req.getParameter("type");
             String city     = req.getParameter("city");

@@ -233,12 +233,28 @@
                 return;
             }
 
-            const date    = document.getElementById('visit-date').value;
-            const time    = document.getElementById('visit-time').value;
-            const agentId = currentProperty.agentId;
+            const date          = document.getElementById('visit-date').value;
+            const time          = document.getElementById('visit-time').value;
+            const agentUserId   = currentProperty.agentId;
 
-            if (!agentId || agentId <= 0) {
+            if (!agentUserId || agentUserId <= 0) {
                 showVisitAlert('Unable to determine the agent for this property.', 'error');
+                btn.disabled = false; btn.textContent = 'Confirm Booking';
+                return;
+            }
+
+            // properties.agent_id references users.id; appointments need agents.id — resolve it
+            let agentId;
+            try {
+                const agentRes = await api.getAgentByUserId(agentUserId);
+                if (!agentRes.success || !agentRes.data) {
+                    showVisitAlert('Could not find the agent profile for this property.', 'error');
+                    btn.disabled = false; btn.textContent = 'Confirm Booking';
+                    return;
+                }
+                agentId = agentRes.data.id;
+            } catch (_) {
+                showVisitAlert('Could not resolve agent. Please try again.', 'error');
                 btn.disabled = false; btn.textContent = 'Confirm Booking';
                 return;
             }

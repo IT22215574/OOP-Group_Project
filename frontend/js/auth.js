@@ -15,9 +15,11 @@ async function initAuth() {
     } else if (parsed.role === 'agent') {
         const postHref  = resolvePostPropertyPath();
         const apptHref  = resolveAgentAppointmentsPath();
+        const myPropHref = resolveMyPropertiesPath();
         extraLinks = `
-            <a href="${apptHref}" class="text-sm text-accent hover:text-accent-light transition font-medium">My Appointments</a>
-            <a href="${postHref}" class="text-sm text-accent hover:text-accent-light transition font-medium">Post Property</a>`;
+            <a href="${apptHref}"  class="text-sm text-accent hover:text-accent-light transition font-medium">Appointments</a>
+            <a href="${myPropHref}" class="text-sm text-accent hover:text-accent-light transition font-medium">My Listings</a>
+            <a href="${postHref}"  class="text-sm text-accent hover:text-accent-light transition font-medium">Post Property</a>`;
     } else if (parsed.role === 'buyer') {
         const apptHref = resolveUserAppointmentsPath();
         extraLinks = `<a href="${apptHref}" class="text-sm text-accent hover:text-accent-light transition font-medium">My Appointments</a>`;
@@ -58,6 +60,13 @@ function resolveAgentAppointmentsPath() {
     if (path.includes('/pages/admin/')) return '../agent-appointments.html';
     if (path.includes('/pages/'))       return 'agent-appointments.html';
     return 'pages/agent-appointments.html';
+}
+
+function resolveMyPropertiesPath() {
+    const path = window.location.pathname;
+    if (path.includes('/pages/admin/')) return '../my-properties.html';
+    if (path.includes('/pages/'))       return 'my-properties.html';
+    return 'pages/my-properties.html';
 }
 
 async function logout() {

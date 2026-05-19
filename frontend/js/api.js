@@ -26,10 +26,11 @@ const api = {
         const qs = new URLSearchParams(params).toString();
         return api.request('GET', `/properties${qs ? '?' + qs : ''}`);
     },
-    getProperty:    (id)         => api.request('GET',    `/properties/${id}`),
-    createProperty: (data)       => api.request('POST',   '/properties', data),
-    updateProperty: (id, data)   => api.request('PUT',    `/properties/${id}`, data),
-    deleteProperty: (id)         => api.request('DELETE', `/properties/${id}`),
+    getProperty:     (id)       => api.request('GET',    `/properties/${id}`),
+    getMyProperties: (agentId) => api.request('GET',    `/properties?agentId=${agentId}`),
+    createProperty:  (data)    => api.request('POST',   '/properties', data),
+    updateProperty:  (id, data)=> api.request('PUT',    `/properties/${id}`, data),
+    deleteProperty:  (id)      => api.request('DELETE', `/properties/${id}`),
 
     // Users (admin)
     getUsers: (params = {}) => {
@@ -46,6 +47,7 @@ const api = {
         return api.request('GET', `/agents${qs ? '?' + qs : ''}`);
     },
     getAgent:    (id)       => api.request('GET',    `/agents/${id}`),
+    getAgentByUserId: (userId) => api.request('GET', `/agents?userId=${userId}`),
     createAgent: (data)     => api.request('POST',   '/agents', data),
     updateAgent: (id, data) => api.request('PUT',    `/agents/${id}`, data),
     deleteAgent: (id)       => api.request('DELETE', `/agents/${id}`),

@@ -2,7 +2,9 @@ package com.primeestate.servlet;
 
 import com.google.gson.Gson;
 import com.primeestate.dao.AgentDAO;
+import com.primeestate.dao.UserDAO;
 import com.primeestate.model.Agent;
+import com.primeestate.model.User;
 import com.primeestate.util.JsonResponse;
 
 import jakarta.servlet.annotation.WebServlet;
@@ -24,6 +26,7 @@ import java.util.List;
 public class AgentServlet extends HttpServlet {
 
     private final AgentDAO agentDAO = new AgentDAO();
+    private final UserDAO  userDAO  = new UserDAO();
     private final Gson     gson     = new Gson();
 
     // READ – View / search agent profiles
@@ -36,9 +39,21 @@ public class AgentServlet extends HttpServlet {
                 if (agent == null) { JsonResponse.error(res, 404, "Agent not found"); return; }
                 JsonResponse.success(res, agent);
             } else {
+                String userIdParam    = req.getParameter("userId");
                 String name           = req.getParameter("name");
                 String location       = req.getParameter("location");
                 String specialization = req.getParameter("specialization");
+
+                // Resolve agents.id from a users.id (properties.agent_id references users, not agents)
+                if (userIdParam != null) {
+                    User user = userDAO.findById(Integer.parseInt(userIdParam));
+                    if (user == null) { JsonResponse.error(res, 404, "User not found"); return; }
+                    Agent agent = agentDAO.findByEmail(user.getEmail());
+                    if (agent == null) { JsonResponse.error(res, 404, "No agent profile for this user"); return; }
+                    JsonResponse.success(res, agent);
+                    return;
+                }
+
                 List<Agent> agents = (name != null || location != null || specialization != null)
                     ? agentDAO.search(name, location, specialization)
                     : agentDAO.readAll();
