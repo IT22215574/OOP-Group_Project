@@ -159,6 +159,10 @@ public class AuthServlet extends HttpServlet {
             result.put("fullName", user.getFullName());
             result.put("email",    user.getEmail());
             result.put("role",     user.getRole());
+            if ("agent".equals(user.getRole())) {
+                Agent agent = agentDAO.findByEmail(user.getEmail());
+                if (agent != null) result.put("agentId", agent.getId());
+            }
             JsonResponse.success(res, result);
 
         } catch (SQLException e) {

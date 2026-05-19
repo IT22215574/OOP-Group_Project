@@ -83,10 +83,10 @@ public class AppointmentDAO extends BaseDAO<Appointment> {
         return list;
     }
 
-    // UPDATE – Reschedule appointment (date, time, status)
+    // UPDATE – Reschedule appointment or set agent response (date, time, status, agent_message)
     @Override
     public boolean update(Appointment appt) throws SQLException {
-        String sql = "UPDATE appointments SET user_id=?, agent_id=?, appointment_date=?, appointment_time=?, property_type=?, appointment_status=? WHERE id=?";
+        String sql = "UPDATE appointments SET user_id=?, agent_id=?, appointment_date=?, appointment_time=?, property_type=?, appointment_status=?, agent_message=? WHERE id=?";
         try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
             ps.setInt(1, appt.getUserId());
             ps.setInt(2, appt.getAgentId());
@@ -94,7 +94,8 @@ public class AppointmentDAO extends BaseDAO<Appointment> {
             ps.setTime(4, appt.getAppointmentTime());
             ps.setString(5, appt.getPropertyType());
             ps.setString(6, appt.getAppointmentStatus());
-            ps.setInt(7, appt.getId());
+            ps.setString(7, appt.getAgentMessage());
+            ps.setInt(8, appt.getId());
             return ps.executeUpdate() > 0;
         }
     }
@@ -120,6 +121,7 @@ public class AppointmentDAO extends BaseDAO<Appointment> {
         a.setPropertyType(rs.getString("property_type"));
         a.setAppointmentStatus(rs.getString("appointment_status"));
         a.setCreatedAt(rs.getTimestamp("created_at"));
+        try { a.setAgentMessage(rs.getString("agent_message")); } catch (SQLException ignored) {}
         try { a.setUserName(rs.getString("user_name")); } catch (SQLException ignored) {}
         try { a.setAgentName(rs.getString("agent_name")); } catch (SQLException ignored) {}
         return a;

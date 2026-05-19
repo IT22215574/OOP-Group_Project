@@ -111,6 +111,16 @@ public class AgentDAO extends BaseDAO<Agent> {
         }
     }
 
+    public Agent findByEmail(String email) throws SQLException {
+        String sql = "SELECT * FROM agents WHERE email = ?";
+        try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return mapRow(rs);
+        }
+        return null;
+    }
+
     public boolean emailExists(String email) throws SQLException {
         String sql = "SELECT COUNT(*) FROM agents WHERE email = ?";
         try (PreparedStatement ps = getConnection().prepareStatement(sql)) {

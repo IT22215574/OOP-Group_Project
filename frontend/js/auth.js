@@ -13,8 +13,14 @@ async function initAuth() {
         const adminHref = resolveAdminPath();
         extraLinks = `<a href="${adminHref}" class="text-sm text-accent hover:text-accent-light transition font-medium">Admin Panel</a>`;
     } else if (parsed.role === 'agent') {
-        const postHref = resolvePostPropertyPath();
-        extraLinks = `<a href="${postHref}" class="text-sm text-accent hover:text-accent-light transition font-medium">Post Property</a>`;
+        const postHref  = resolvePostPropertyPath();
+        const apptHref  = resolveAgentAppointmentsPath();
+        extraLinks = `
+            <a href="${apptHref}" class="text-sm text-accent hover:text-accent-light transition font-medium">My Appointments</a>
+            <a href="${postHref}" class="text-sm text-accent hover:text-accent-light transition font-medium">Post Property</a>`;
+    } else if (parsed.role === 'buyer') {
+        const apptHref = resolveUserAppointmentsPath();
+        extraLinks = `<a href="${apptHref}" class="text-sm text-accent hover:text-accent-light transition font-medium">My Appointments</a>`;
     }
 
     navAuth.innerHTML = `
@@ -38,6 +44,20 @@ function resolvePostPropertyPath() {
     if (path.includes('/pages/admin/')) return '../post-property.html';
     if (path.includes('/pages/'))       return 'post-property.html';
     return 'pages/post-property.html';
+}
+
+function resolveUserAppointmentsPath() {
+    const path = window.location.pathname;
+    if (path.includes('/pages/admin/')) return '../appointments.html';
+    if (path.includes('/pages/'))       return 'appointments.html';
+    return 'pages/appointments.html';
+}
+
+function resolveAgentAppointmentsPath() {
+    const path = window.location.pathname;
+    if (path.includes('/pages/admin/')) return '../agent-appointments.html';
+    if (path.includes('/pages/'))       return 'agent-appointments.html';
+    return 'pages/agent-appointments.html';
 }
 
 async function logout() {

@@ -17,6 +17,7 @@ public class Appointment extends BaseEntity {
     private Time   appointmentTime;
     private String propertyType;
     private String appointmentStatus;
+    private String agentMessage;
 
     // Read-only join fields (populated on fetch, not persisted directly)
     private String userName;
@@ -42,6 +43,7 @@ public class Appointment extends BaseEntity {
     public Time   getAppointmentTime()   { return appointmentTime; }
     public String getPropertyType()      { return propertyType; }
     public String getAppointmentStatus() { return appointmentStatus; }
+    public String getAgentMessage()      { return agentMessage; }
     public String getUserName()          { return userName; }
     public String getAgentName()         { return agentName; }
 
@@ -52,6 +54,7 @@ public class Appointment extends BaseEntity {
     public void setAppointmentTime(Time appointmentTime)      { this.appointmentTime   = appointmentTime; }
     public void setPropertyType(String propertyType)          { this.propertyType      = propertyType; }
     public void setAppointmentStatus(String appointmentStatus){ this.appointmentStatus = appointmentStatus; }
+    public void setAgentMessage(String agentMessage)          { this.agentMessage      = agentMessage; }
     public void setUserName(String userName)                  { this.userName          = userName; }
     public void setAgentName(String agentName)                { this.agentName         = agentName; }
 

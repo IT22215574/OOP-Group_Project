@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Appointment Requests – PrimeEstate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { DEFAULT: '#1a3c5e', light: '#2d6a9f', dark: '#0f2540' },
+                        accent:  { DEFAULT: '#e8a020', light: '#f0b93a' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 font-sans min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="bg-primary text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="../index.html" class="flex items-center space-x-1">
+                <span class="text-accent text-2xl font-bold">Prime</span>
+                <span class="text-white text-2xl font-bold">Estate</span>
+            </a>
+            <div class="flex items-center gap-5" id="nav-auth">
+                <a href="post-property.html" class="text-sm hover:text-accent transition">Post Property</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="bg-primary-dark text-white py-10">
+        <div class="max-w-5xl mx-auto px-4">
+            <h1 class="text-3xl font-bold">Appointment Requests</h1>
+            <p class="text-gray-300 mt-2 text-sm">Review, accept or decline visit requests from buyers.</p>
+        </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="max-w-5xl mx-auto px-4 mt-6">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div class="bg-white rounded-xl p-4 shadow-sm text-center">
+                <p class="text-2xl font-bold text-yellow-600" id="count-pending">—</p>
+                <p class="text-xs text-gray-500 mt-1">Pending</p>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm text-center">
+                <p class="text-2xl font-bold text-green-600" id="count-confirmed">—</p>
+                <p class="text-xs text-gray-500 mt-1">Confirmed</p>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm text-center">
+                <p class="text-2xl font-bold text-red-600" id="count-rejected">—</p>
+                <p class="text-xs text-gray-500 mt-1">Rejected</p>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm text-center">
+                <p class="text-2xl font-bold text-gray-500" id="count-total">—</p>
+                <p class="text-xs text-gray-500 mt-1">Total</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="max-w-5xl mx-auto px-4 mt-6">
+        <div class="flex gap-2 flex-wrap">
+            <button onclick="filterAppointments('all')"       id="tab-all"        class="tab-btn active-tab px-4 py-2 rounded-full text-sm font-medium transition">All</button>
+            <button onclick="filterAppointments('pending')"    id="tab-pending"    class="tab-btn px-4 py-2 rounded-full text-sm font-medium transition">Pending</button>
+            <button onclick="filterAppointments('confirmed')"  id="tab-confirmed"  class="tab-btn px-4 py-2 rounded-full text-sm font-medium transition">Confirmed</button>
+            <button onclick="filterAppointments('rejected')"   id="tab-rejected"   class="tab-btn px-4 py-2 rounded-full text-sm font-medium transition">Rejected</button>
+            <button onclick="filterAppointments('cancelled')"  id="tab-cancelled"  class="tab-btn px-4 py-2 rounded-full text-sm font-medium transition">Cancelled</button>
+        </div>
+    </div>
+
+    <!-- Appointments List -->
+    <div class="max-w-5xl mx-auto px-4 py-6">
+        <div id="appointments-container">
+            <div class="text-center py-16 text-gray-400">
+                <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <p>Loading appointments...</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-primary-dark text-gray-400 text-center py-6 mt-12 text-sm">
+        &copy; 2025 PrimeEstate. All rights reserved.
+    </footer>
+
+    <!-- Accept / Reject Modal -->
+    <div id="respond-modal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50">
+        <div class="flex items-center justify-center h-full px-4">
+        <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+            <div class="flex items-center justify-between mb-2">
+                <h2 class="text-xl font-bold text-primary" id="modal-title">Respond to Appointment</h2>
+                <button onclick="closeRespondModal()" class="text-gray-400 hover:text-gray-600 text-3xl leading-none font-light">&times;</button>
+            </div>
+            <p class="text-sm text-gray-500 mb-5" id="modal-subtitle"></p>
+
+            <div id="respond-alert" class="hidden mb-4 p-3 rounded-lg text-sm"></div>
+
+            <!-- Appointment summary -->
+            <div class="bg-gray-50 rounded-xl p-4 mb-5 text-sm space-y-1.5" id="modal-summary"></div>
+
+            <!-- Decision selector (for change-decision flow) -->
+            <div id="decision-selector" class="hidden mb-4">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Change decision to:</label>
+                <div class="flex gap-3">
+                    <button onclick="setDecision('confirmed')" id="btn-accept"
+                            class="flex-1 py-2 rounded-lg text-sm font-semibold border-2 border-green-500 text-green-700 hover:bg-green-50 transition">
+                        Accept
+                    </button>
+                    <button onclick="setDecision('rejected')" id="btn-reject"
+                            class="flex-1 py-2 rounded-lg text-sm font-semibold border-2 border-red-400 text-red-600 hover:bg-red-50 transition">
+                        Reject
+                    </button>
+                </div>
+            </div>
+
+            <form id="respond-form" class="space-y-4" onsubmit="submitResponse(event)">
+                <input type="hidden" id="respond-id" />
+                <input type="hidden" id="respond-action" />
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">
+                        Message to Buyer <span class="text-gray-400 font-normal">(optional)</span>
+                    </label>
+                    <textarea id="respond-message" rows="3" placeholder="Add a note for the buyer..."
+                              class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
+                </div>
+                <div class="flex gap-3 pt-1">
+                    <button type="submit" id="respond-submit-btn"
+                            class="flex-1 py-2.5 rounded-lg font-semibold text-white transition">
+                        Confirm
+                    </button>
+                    <button type="button" onclick="closeRespondModal()"
+                            class="flex-1 border border-gray-200 text-gray-600 py-2.5 rounded-lg font-semibold hover:bg-gray-50 transition">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+        </div>
+    </div>
+
+    <style>
+        .tab-btn { background: white; color: #6b7280; border: 1px solid #e5e7eb; }
+        .active-tab { background: #1a3c5e; color: white; border-color: #1a3c5e; }
+        .decision-selected { ring: 2px; }
+    </style>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        let allAppointments = [];
+        let currentFilter   = 'all';
+        let selectedDecision = null;
+
+        const statusConfig = {
+            pending:     { label: 'Pending',     cls: 'bg-yellow-100 text-yellow-800' },
+            confirmed:   { label: 'Confirmed',   cls: 'bg-green-100  text-green-800'  },
+            rescheduled: { label: 'Rescheduled', cls: 'bg-blue-100   text-blue-800'   },
+            cancelled:   { label: 'Cancelled',   cls: 'bg-gray-100   text-gray-600'   },
+            rejected:    { label: 'Rejected',    cls: 'bg-red-100    text-red-700'     }
+        };
+
+        async function init() {
+            const userData = sessionStorage.getItem('user');
+            if (!userData) {
+                window.location.href = 'login.html?redirect=agent-appointments.html';
+                return;
+            }
+            const user = JSON.parse(userData);
+            if (user.role !== 'agent') {
+                window.location.href = user.role === 'buyer' ? 'appointments.html' : '../index.html';
+                return;
+            }
+            if (!user.agentId) {
+                showEmpty('Agent profile not linked. Please log out and log in again.');
+                return;
+            }
+            await loadAppointments(user.agentId);
+        }
+
+        async function loadAppointments(agentId) {
+            try {
+                const res = await api.getAppointments({ agentId });
+                if (res.success) {
+                    allAppointments = res.data || [];
+                    updateStats();
+                    renderAppointments(allAppointments);
+                } else {
+                    showEmpty('Failed to load appointments.');
+                }
+            } catch (e) {
+                showEmpty('Could not connect to the server.');
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('count-total').textContent     = allAppointments.length;
+            document.getElementById('count-pending').textContent   = allAppointments.filter(a => a.appointmentStatus === 'pending').length;
+            document.getElementById('count-confirmed').textContent = allAppointments.filter(a => a.appointmentStatus === 'confirmed').length;
+            document.getElementById('count-rejected').textContent  = allAppointments.filter(a => a.appointmentStatus === 'rejected').length;
+        }
+
+        function filterAppointments(status) {
+            currentFilter = status;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active-tab'));
+            document.getElementById(`tab-${status}`).classList.add('active-tab');
+            const filtered = status === 'all'
+                ? allAppointments
+                : allAppointments.filter(a => a.appointmentStatus === status);
+            renderAppointments(filtered);
+        }
+
+        function renderAppointments(list) {
+            const container = document.getElementById('appointments-container');
+            if (!list.length) {
+                container.innerHTML = `
+                    <div class="text-center py-16 text-gray-400">
+                        <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        <p class="font-medium">No appointments here</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = list.map(appt => {
+                const sc   = statusConfig[appt.appointmentStatus] || { label: appt.appointmentStatus, cls: 'bg-gray-100 text-gray-600' };
+                const date = new Date(appt.appointmentDate).toLocaleDateString('en-GB', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+                const time = formatTime(appt.appointmentTime);
+
+                const isPending    = appt.appointmentStatus === 'pending' || appt.appointmentStatus === 'rescheduled';
+                const isDecided    = appt.appointmentStatus === 'confirmed' || appt.appointmentStatus === 'rejected';
+                const isCancelled  = appt.appointmentStatus === 'cancelled';
+
+                const existingMsg = appt.agentMessage ? `
+                    <div class="mt-3 p-3 bg-indigo-50 border border-indigo-100 rounded-lg">
+                        <p class="text-xs font-semibold text-indigo-600 mb-1">Your message to buyer:</p>
+                        <p class="text-sm text-indigo-800">${escapeHtml(appt.agentMessage)}</p>
+                    </div>` : '';
+
+                const actionBtns = isCancelled ? '' : isPending ? `
+                    <div class="flex gap-2 flex-shrink-0 flex-col sm:flex-row">
+                        <button onclick="openRespondModal(${JSON.stringify(appt).replace(/"/g,'&quot;')}, 'confirmed')"
+                                class="flex items-center gap-1.5 px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Accept
+                        </button>
+                        <button onclick="openRespondModal(${JSON.stringify(appt).replace(/"/g,'&quot;')}, 'rejected')"
+                                class="flex items-center gap-1.5 px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            Reject
+                        </button>
+                    </div>` : isDecided ? `
+                    <button onclick="openRespondModal(${JSON.stringify(appt).replace(/"/g,'&quot;')}, 'change')"
+                            class="flex items-center gap-1.5 px-4 py-2 border border-primary text-primary rounded-lg text-sm font-medium hover:bg-primary hover:text-white transition">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        Change Decision
+                    </button>` : '';
+
+                return `
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-4 hover:shadow-md transition">
+                        <div class="flex items-start justify-between flex-wrap gap-4">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-3 flex-wrap mb-3">
+                                    <span class="text-xs font-semibold px-2.5 py-1 rounded-full ${sc.cls}">${sc.label}</span>
+                                    ${appt.propertyType ? `<span class="text-xs text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">${appt.propertyType}</span>` : ''}
+                                </div>
+                                <div class="space-y-1.5">
+                                    <div class="flex items-center gap-2 text-sm text-gray-700">
+                                        <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                        <span>Buyer: <strong>${escapeHtml(appt.userName || 'Unknown')}</strong></span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-sm text-gray-700">
+                                        <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                        <span>${date}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-sm text-gray-700">
+                                        <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        <span>${time}</span>
+                                    </div>
+                                </div>
+                                ${existingMsg}
+                            </div>
+                            <div class="flex-shrink-0">
+                                ${actionBtns}
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-gray-50 text-xs text-gray-400">
+                            Appointment #${appt.id} &middot; Requested on ${new Date(appt.createdAt).toLocaleDateString('en-GB')}
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        function openRespondModal(appt, action) {
+            selectedDecision = action === 'change' ? null : action;
+            const isChange = action === 'change';
+
+            document.getElementById('respond-id').value      = appt.id;
+            document.getElementById('respond-action').value  = action;
+            document.getElementById('respond-message').value = appt.agentMessage || '';
+            hideAlert('respond-alert');
+
+            // Summary block
+            const date = new Date(appt.appointmentDate).toLocaleDateString('en-GB', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+            document.getElementById('modal-summary').innerHTML = `
+                <div class="flex justify-between"><span class="text-gray-500">Buyer</span><span class="font-medium">${escapeHtml(appt.userName || '—')}</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">Date</span><span class="font-medium">${date}</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">Time</span><span class="font-medium">${formatTime(appt.appointmentTime)}</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">Type</span><span class="font-medium">${appt.propertyType || '—'}</span></div>`;
+
+            // Show / hide decision selector
+            const decisionEl = document.getElementById('decision-selector');
+            if (isChange) {
+                decisionEl.classList.remove('hidden');
+                document.getElementById('modal-title').textContent    = 'Change Your Decision';
+                document.getElementById('modal-subtitle').textContent = 'Update your response for this appointment request.';
+                updateDecisionButtons(null);
+            } else {
+                decisionEl.classList.add('hidden');
+                const isAccept = action === 'confirmed';
+                document.getElementById('modal-title').textContent    = isAccept ? 'Accept Appointment' : 'Reject Appointment';
+                document.getElementById('modal-subtitle').textContent = isAccept
+                    ? 'Accepting will confirm this visit for the buyer.'
+                    : 'Rejecting will notify the buyer that the appointment is declined.';
+                styleSubmitButton(action);
+            }
+
+            document.getElementById('respond-modal').classList.remove('hidden');
+        }
+
+        function setDecision(decision) {
+            selectedDecision = decision;
+            document.getElementById('respond-action').value = decision;
+            updateDecisionButtons(decision);
+            styleSubmitButton(decision);
+        }
+
+        function updateDecisionButtons(active) {
+            const acceptBtn = document.getElementById('btn-accept');
+            const rejectBtn = document.getElementById('btn-reject');
+            acceptBtn.className = `flex-1 py-2 rounded-lg text-sm font-semibold border-2 transition ${active === 'confirmed' ? 'bg-green-500 border-green-500 text-white' : 'border-green-500 text-green-700 hover:bg-green-50'}`;
+            rejectBtn.className = `flex-1 py-2 rounded-lg text-sm font-semibold border-2 transition ${active === 'rejected'  ? 'bg-red-500 border-red-500 text-white'   : 'border-red-400  text-red-600  hover:bg-red-50'}`;
+        }
+
+        function styleSubmitButton(action) {
+            const btn = document.getElementById('respond-submit-btn');
+            if (action === 'confirmed') {
+                btn.className = 'flex-1 py-2.5 rounded-lg font-semibold text-white transition bg-green-500 hover:bg-green-600';
+                btn.textContent = 'Confirm Acceptance';
+            } else if (action === 'rejected') {
+                btn.className = 'flex-1 py-2.5 rounded-lg font-semibold text-white transition bg-red-500 hover:bg-red-600';
+                btn.textContent = 'Confirm Rejection';
+            } else {
+                btn.className = 'flex-1 py-2.5 rounded-lg font-semibold text-white transition bg-primary hover:bg-primary-dark';
+                btn.textContent = 'Save Decision';
+            }
+        }
+
+        function closeRespondModal() {
+            document.getElementById('respond-modal').classList.add('hidden');
+            selectedDecision = null;
+        }
+
+        async function submitResponse(e) {
+            e.preventDefault();
+            const id      = document.getElementById('respond-id').value;
+            const action  = document.getElementById('respond-action').value;
+            const message = document.getElementById('respond-message').value.trim();
+
+            if (action === 'change' || !action) {
+                showAlert('respond-alert', 'Please select Accept or Reject first.', 'error');
+                return;
+            }
+
+            try {
+                const res = await api.updateAppointment(id, {
+                    appointmentStatus: action,
+                    agentMessage:      message || null
+                });
+                if (res.success) {
+                    closeRespondModal();
+                    const user = JSON.parse(sessionStorage.getItem('user'));
+                    await loadAppointments(user.agentId);
+                    filterAppointments(currentFilter);
+                } else {
+                    showAlert('respond-alert', res.message || 'Failed to update.', 'error');
+                }
+            } catch (err) {
+                showAlert('respond-alert', 'Could not connect to the server.', 'error');
+            }
+        }
+
+        function showEmpty(msg) {
+            document.getElementById('appointments-container').innerHTML =
+                `<div class="text-center py-16 text-gray-400"><p>${msg}</p></div>`;
+        }
+
+        function showAlert(id, msg, type) {
+            const el = document.getElementById(id);
+            el.textContent = msg;
+            el.className = `mb-4 p-3 rounded-lg text-sm ${type === 'error' ? 'bg-red-50 text-red-700' : 'bg-green-50 text-green-700'}`;
+            el.classList.remove('hidden');
+        }
+
+        function hideAlert(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function formatTime(t) {
+            if (!t) return '';
+            const [h, m] = t.split(':');
+            const hour = parseInt(h, 10);
+            return `${hour % 12 || 12}:${m} ${hour < 12 ? 'AM' : 'PM'}`;
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        init();
+    </script>
+</body>
+</html>

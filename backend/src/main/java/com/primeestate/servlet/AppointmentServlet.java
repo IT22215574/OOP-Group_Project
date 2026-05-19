@@ -89,6 +89,7 @@ public class AppointmentServlet extends HttpServlet {
             if (body.has("appointmentTime"))   existing.setAppointmentTime(Time.valueOf(body.get("appointmentTime").getAsString()));
             if (body.has("propertyType"))      existing.setPropertyType(body.get("propertyType").getAsString());
             if (body.has("appointmentStatus")) existing.setAppointmentStatus(body.get("appointmentStatus").getAsString());
+            if (body.has("agentMessage"))      existing.setAgentMessage(body.get("agentMessage").isJsonNull() ? null : body.get("agentMessage").getAsString());
 
             boolean updated = appointmentDAO.update(existing);
             if (updated) JsonResponse.success(res, "Appointment updated successfully");
@@ -120,8 +121,9 @@ public class AppointmentServlet extends HttpServlet {
         if (body.has("agentId"))         a.setAgentId(body.get("agentId").getAsInt());
         if (body.has("appointmentDate")) a.setAppointmentDate(Date.valueOf(body.get("appointmentDate").getAsString()));
         if (body.has("appointmentTime")) a.setAppointmentTime(Time.valueOf(body.get("appointmentTime").getAsString()));
-        if (body.has("propertyType"))    a.setPropertyType(body.get("propertyType").getAsString());
+        if (body.has("propertyType"))      a.setPropertyType(body.get("propertyType").getAsString());
         if (body.has("appointmentStatus")) a.setAppointmentStatus(body.get("appointmentStatus").getAsString());
+        if (body.has("agentMessage"))      a.setAgentMessage(body.get("agentMessage").isJsonNull() ? null : body.get("agentMessage").getAsString());
         return a;
     }
 

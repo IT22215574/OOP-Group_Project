@@ -45,7 +45,8 @@ CREATE TABLE IF NOT EXISTS appointments (
     appointment_date    DATE NOT NULL,
     appointment_time    TIME NOT NULL,
     property_type       VARCHAR(50),
-    appointment_status  ENUM('pending', 'confirmed', 'rescheduled', 'cancelled') DEFAULT 'pending',
+    appointment_status  ENUM('pending', 'confirmed', 'rescheduled', 'cancelled', 'rejected') DEFAULT 'pending',
+    agent_message       TEXT NULL,
     created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id)  REFERENCES users(id)  ON DELETE CASCADE,
     FOREIGN KEY (agent_id) REFERENCES agents(id) ON DELETE CASCADE
@@ -130,3 +131,10 @@ INSERT INTO advertisements (agent_id, property_title, property_type, price, loca
 (1, 'Modern Family Home in Colombo 7',  'Residential', 45000000, 'Colombo 7',   'Spacious modern home with open plan living.', 'available'),
 (2, 'Prime Office Space - Kandy City',  'Commercial',  12000000, 'Kandy',       'Premium office space in the heart of Kandy.', 'available'),
 (1, 'Luxury Villa - Negombo Beach',     'Residential', 75000000, 'Negombo',     'Private beachfront villa with 5 bedrooms.',   'available');
+
+-- ============================================================
+-- Migration: Run these on existing databases (already applied in CREATE TABLE above)
+-- ============================================================
+-- ALTER TABLE appointments
+--     ADD COLUMN IF NOT EXISTS agent_message TEXT NULL AFTER appointment_status,
+--     MODIFY COLUMN appointment_status ENUM('pending','confirmed','rescheduled','cancelled','rejected') DEFAULT 'pending';

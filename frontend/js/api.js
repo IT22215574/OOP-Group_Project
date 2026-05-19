@@ -59,12 +59,13 @@ const api = {
     deleteAd: (id)       => api.request('DELETE', `/advertisements/${id}`),
 
     // Appointments
-    scheduleVisit:    (data)   => api.request('POST',   '/appointments', data),
-    getAppointments:  (params = {}) => {
+    scheduleVisit:     (data)        => api.request('POST',   '/appointments', data),
+    getAppointments:   (params = {}) => {
         const qs = new URLSearchParams(params).toString();
         return api.request('GET', `/appointments${qs ? '?' + qs : ''}`);
     },
-    cancelAppointment: (id)   => api.request('DELETE', `/appointments/${id}`),
+    updateAppointment: (id, data)    => api.request('PUT',    `/appointments/${id}`, data),
+    cancelAppointment: (id)          => api.request('DELETE', `/appointments/${id}`),
 
     // Image upload (multipart — no JSON Content-Type)
     uploadImage: async (formData) => {
