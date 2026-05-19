@@ -59,7 +59,9 @@
 
             <p class="text-center text-sm text-gray-500 mt-6">
                 Don't have an account?
-                <a href="register.html" class="text-primary font-semibold hover:text-accent transition">Register</a>
+                <a href="register.html" class="text-primary font-semibold hover:text-accent transition">Register as Buyer</a>
+                &nbsp;·&nbsp;
+                <a href="agent-register.html" class="text-primary font-semibold hover:text-accent transition">Register as Agent</a>
             </p>
         </div>
     </div>
@@ -78,7 +80,11 @@
                 const res = await api.login(email, password);
                 if (res.success) {
                     sessionStorage.setItem('user', JSON.stringify(res.data));
-                    window.location.href = '../index.html';
+                    if (res.data.role === 'admin') {
+                        window.location.href = 'admin/dashboard.html';
+                    } else {
+                        window.location.href = '../index.html';
+                    }
                 } else {
                     showAlert(res.message || 'Login failed', 'error');
                 }

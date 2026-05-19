@@ -7,12 +7,37 @@ async function initAuth() {
     const navAuth = document.getElementById('nav-auth');
     if (!navAuth) return;
 
+    // Build role-specific links
+    let extraLinks = '';
+    if (parsed.role === 'admin') {
+        const adminHref = resolveAdminPath();
+        extraLinks = `<a href="${adminHref}" class="text-sm text-accent hover:text-accent-light transition font-medium">Admin Panel</a>`;
+    } else if (parsed.role === 'agent') {
+        const postHref = resolvePostPropertyPath();
+        extraLinks = `<a href="${postHref}" class="text-sm text-accent hover:text-accent-light transition font-medium">Post Property</a>`;
+    }
+
     navAuth.innerHTML = `
+        ${extraLinks}
         <span class="text-sm text-gray-200">Hi, ${parsed.fullName.split(' ')[0]}</span>
         <button onclick="logout()"
                 class="text-sm border border-white px-4 py-1.5 rounded-full hover:bg-white hover:text-primary transition">
             Logout
         </button>`;
+}
+
+function resolveAdminPath() {
+    const path = window.location.pathname;
+    if (path.includes('/pages/admin/')) return 'dashboard.html';
+    if (path.includes('/pages/'))       return 'admin/dashboard.html';
+    return 'pages/admin/dashboard.html';
+}
+
+function resolvePostPropertyPath() {
+    const path = window.location.pathname;
+    if (path.includes('/pages/admin/')) return '../post-property.html';
+    if (path.includes('/pages/'))       return 'post-property.html';
+    return 'pages/post-property.html';
 }
 
 async function logout() {

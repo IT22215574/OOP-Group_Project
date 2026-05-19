@@ -63,11 +63,16 @@ public class PropertyServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        if (!isAuthenticated(req, res)) return;
         try {
             Property property = gson.fromJson(req.getReader(), Property.class);
             if (property.getTitle() == null || property.getPrice() == null) {
                 JsonResponse.error(res, 400, "Title and price are required");
                 return;
+            }
+            HttpSession session = req.getSession(false);
+            if (property.getAgentId() == 0) {
+                property.setAgentId((int) session.getAttribute("userId"));
             }
             int newId = propertyDAO.save(property);
             Map<String, Object> result = new HashMap<>();
@@ -80,6 +85,7 @@ public class PropertyServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        if (!isAuthenticated(req, res)) return;
         String pathInfo = req.getPathInfo();
         if (pathInfo == null || !pathInfo.matches("/\\d+")) {
             JsonResponse.error(res, 400, "Property ID required");
@@ -102,6 +108,7 @@ public class PropertyServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        if (!isAuthenticated(req, res)) return;
         String pathInfo = req.getPathInfo();
         if (pathInfo == null || !pathInfo.matches("/\\d+")) {
             JsonResponse.error(res, 400, "Property ID required");
@@ -118,6 +125,15 @@ public class PropertyServlet extends HttpServlet {
         } catch (SQLException e) {
             JsonResponse.error(res, 500, "Database error: " + e.getMessage());
         }
+    }
+
+    private boolean isAuthenticated(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        HttpSession session = req.getSession(false);
+        if (session == null || session.getAttribute("userId") == null) {
+            JsonResponse.error(res, 401, "Authentication required");
+            return false;
+        }
+        return true;
     }
 
     private int parseIntParam(String value, int defaultVal) {

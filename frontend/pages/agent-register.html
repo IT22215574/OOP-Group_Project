@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register as Agent – PrimeEstate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { DEFAULT: '#1a3c5e', light: '#2d6a9f', dark: '#0f2540' },
+                        accent:  { DEFAULT: '#e8a020', light: '#f0b93a' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+    <nav class="bg-primary text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="../index.html" class="flex items-center space-x-1">
+                <span class="text-accent text-2xl font-bold">Prime</span>
+                <span class="text-white text-2xl font-bold">Estate</span>
+            </a>
+            <a href="register.html" class="text-sm text-gray-300 hover:text-white transition">Register as Buyer</a>
+        </div>
+    </nav>
+
+    <div class="flex-1 flex items-center justify-center px-4 py-12">
+        <div class="bg-white rounded-2xl shadow-lg w-full max-w-2xl p-8">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-14 h-14 bg-primary/10 rounded-2xl mb-4">
+                    <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-bold text-primary mb-1">Register as Agent / Seller</h1>
+                <p class="text-gray-500 text-sm">Create your professional account to list properties on PrimeEstate</p>
+            </div>
+
+            <div id="alert" class="hidden mb-5 p-3 rounded-lg text-sm"></div>
+
+            <form id="agent-form" class="space-y-5">
+
+                <!-- Account details -->
+                <div>
+                    <h2 class="text-sm font-bold text-gray-700 uppercase tracking-wide mb-3">Account Details</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="sm:col-span-2">
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Full Name <span class="text-red-500">*</span></label>
+                            <input id="fullName" type="text" required placeholder="John Silva"
+                                   class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Email Address <span class="text-red-500">*</span></label>
+                            <input id="email" type="email" required placeholder="you@example.com"
+                                   class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Phone Number <span class="text-red-500">*</span></label>
+                            <input id="phone" type="tel" required placeholder="077 123 4567"
+                                   class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Password <span class="text-red-500">*</span></label>
+                            <input id="password" type="password" required placeholder="Min. 8 characters"
+                                   class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Confirm Password <span class="text-red-500">*</span></label>
+                            <input id="confirmPassword" type="password" required placeholder="Re-enter password"
+                                   class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-gray-100" />
+
+                <!-- Agent profile -->
+                <div>
+                    <h2 class="text-sm font-bold text-gray-700 uppercase tracking-wide mb-3">Agent Profile</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Contact Number</label>
+                            <input id="contactNumber" type="tel" placeholder="Same as phone if blank"
+                                   class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Operating Location <span class="text-red-500">*</span></label>
+                            <input id="location" type="text" required placeholder="e.g. Colombo"
+                                   class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Years of Experience</label>
+                            <input id="experienceYears" type="number" min="0" max="50" placeholder="0"
+                                   class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Property Specialization</label>
+                            <select id="specialization"
+                                    class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                                <option value="">Select specialization</option>
+                                <option value="house">House</option>
+                                <option value="apartment">Apartment</option>
+                                <option value="villa">Villa</option>
+                                <option value="land">Land</option>
+                                <option value="commercial">Commercial</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3 pt-1">
+                    <input id="terms" type="checkbox" required
+                           class="mt-0.5 w-4 h-4 accent-primary flex-shrink-0" />
+                    <label for="terms" class="text-sm text-gray-600">
+                        I agree to the <a href="#" class="text-primary font-semibold hover:text-accent">Terms of Service</a>
+                        and confirm that I am a licensed real estate agent or property seller.
+                    </label>
+                </div>
+
+                <button type="submit"
+                        class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary-dark transition text-sm">
+                    Create Agent Account
+                </button>
+            </form>
+
+            <p class="text-center text-sm text-gray-500 mt-6">
+                Already have an account?
+                <a href="login.html" class="text-primary font-semibold hover:text-accent transition">Sign In</a>
+                &nbsp;·&nbsp;
+                <a href="register.html" class="text-primary font-semibold hover:text-accent transition">Register as Buyer</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script>
+        document.getElementById('agent-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fullName        = document.getElementById('fullName').value.trim();
+            const email           = document.getElementById('email').value.trim();
+            const phone           = document.getElementById('phone').value.trim();
+            const password        = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const contactNumber   = document.getElementById('contactNumber').value.trim() || phone;
+            const location        = document.getElementById('location').value.trim();
+            const experienceYears = parseInt(document.getElementById('experienceYears').value) || 0;
+            const specialization  = document.getElementById('specialization').value;
+
+            if (password !== confirmPassword) return showAlert('Passwords do not match', 'error');
+            if (password.length < 8)          return showAlert('Password must be at least 8 characters', 'error');
+            if (!location)                    return showAlert('Operating location is required', 'error');
+
+            try {
+                const res = await api.registerAgent({
+                    fullName, email, phone, password,
+                    contactNumber, location, experienceYears, specialization
+                });
+                if (res.success) {
+                    showAlert('Agent account created! Redirecting to login...', 'success');
+                    setTimeout(() => window.location.href = 'login.html', 1800);
+                } else {
+                    showAlert(res.message || 'Registration failed', 'error');
+                }
+            } catch (_) {
+                showAlert('Unable to connect. Is the server running?', 'error');
+            }
+        });
+
+        function showAlert(msg, type) {
+            const el = document.getElementById('alert');
+            el.textContent = msg;
+            el.className = `mb-5 p-3 rounded-lg text-sm ${type === 'error' ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-green-50 text-green-700 border border-green-200'}`;
+            el.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
