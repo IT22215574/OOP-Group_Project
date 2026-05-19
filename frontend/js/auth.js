@@ -16,9 +16,12 @@ async function initAuth() {
 }
 
 async function logout() {
+    if (!window.confirm('Are you sure you want to log out?')) return;
     try { await api.logout(); } catch (_) {}
     sessionStorage.removeItem('user');
-    window.location.href = '/index.html';
+    const basePath = window.location.pathname.split('/frontend/')[0];
+    const homePath = `${basePath}/frontend/index.html`;
+    window.location.href = homePath;
 }
 
 initAuth();

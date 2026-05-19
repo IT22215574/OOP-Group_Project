@@ -1,6 +1,28 @@
 let currentPage = 1;
 const urlParams = new URLSearchParams(window.location.search);
 
+function highlightNavByType() {
+    const type = urlParams.get('type');
+    const buyLink  = document.getElementById('nav-buy');
+    const rentLink = document.getElementById('nav-rent');
+    const propertiesLink = document.getElementById('nav-properties');
+    if (!buyLink || !rentLink) return;
+
+    buyLink.classList.remove('text-accent', 'font-semibold');
+    rentLink.classList.remove('text-accent', 'font-semibold');
+    if (propertiesLink) propertiesLink.classList.remove('text-accent', 'font-semibold');
+
+    if (type === 'sale') {
+        buyLink.classList.add('text-accent', 'font-semibold');
+        return;
+    }
+    if (type === 'rent') {
+        rentLink.classList.add('text-accent', 'font-semibold');
+        return;
+    }
+    if (propertiesLink) propertiesLink.classList.add('text-accent', 'font-semibold');
+}
+
 // Pre-fill filters from URL
 document.getElementById('filter-type').value     = urlParams.get('type')     || '';
 document.getElementById('filter-category').value = urlParams.get('category') || '';
@@ -15,6 +37,16 @@ function buildParams(page) {
     if (type)     params.type     = type;
     if (category) params.category = category;
     return params;
+}
+
+function buildQueryString(page) {
+    const params = buildParams(page);
+    return new URLSearchParams(params).toString();
+}
+
+function goToPage(page) {
+    const qs = buildQueryString(page);
+    window.location.href = `properties.html${qs ? '?' + qs : ''}`;
 }
 
 async function loadProperties(page = 1) {
@@ -86,19 +118,23 @@ function renderPagination(pages, current) {
         const active = i === current
             ? 'bg-primary text-white'
             : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50';
-        html += `<button onclick="loadProperties(${i})" class="px-4 py-2 rounded-lg text-sm font-medium transition ${active}">${i}</button>`;
+        html += `<button onclick="goToPage(${i})" class="px-4 py-2 rounded-lg text-sm font-medium transition ${active}">${i}</button>`;
     }
     container.innerHTML = html;
 }
 
-function applyFilters() { loadProperties(1); }
+function applyFilters() { goToPage(1); }
 
 function resetFilters() {
     document.getElementById('filter-city').value     = '';
     document.getElementById('filter-type').value     = '';
     document.getElementById('filter-category').value = '';
-    loadProperties(1);
+    goToPage(1);
 }
 
 // Init
+highlightNavByType();
 loadProperties(1);
+
+const typeFilter = document.getElementById('filter-type');
+if (typeFilter) typeFilter.addEventListener('change', () => goToPage(1));
