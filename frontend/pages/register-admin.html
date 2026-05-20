@@ -1,12 +1,9 @@
-/*new ui separation*/
-<!-- INCOMING CHANGE COMMENTED OUT (merge conflict) BEGIN
-INCOMING CHANGE COMMENTED OUT (merge conflict) END -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Register – PrimeEstate</title>
+    <title>Register Admin – PrimeEstate</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -28,6 +25,7 @@ INCOMING CHANGE COMMENTED OUT (merge conflict) END -->
             <a href="../index.html" class="flex items-center space-x-1">
                 <span class="text-accent text-2xl font-bold">Prime</span>
                 <span class="text-white text-2xl font-bold">Estate</span>
+                <span class="ml-2 text-xs bg-red-600 px-2 py-1 rounded">Admin</span>
             </a>
         </div>
     </nav>
@@ -35,8 +33,8 @@ INCOMING CHANGE COMMENTED OUT (merge conflict) END -->
     <div class="flex-1 flex items-center justify-center px-4 py-12">
         <div class="bg-white rounded-2xl shadow-lg w-full max-w-md p-8">
             <div class="text-center mb-8">
-                <h1 class="text-2xl font-bold text-primary mb-1">Create Account</h1>
-                <p class="text-gray-500 text-sm">Join PrimeEstate today</p>
+                <h1 class="text-2xl font-bold text-primary mb-1">Create Admin Account</h1>
+                <p class="text-gray-500 text-sm">Register a new administrator</p>
             </div>
 
             <div id="alert" class="hidden mb-4 p-3 rounded-lg text-sm"></div>
@@ -44,17 +42,12 @@ INCOMING CHANGE COMMENTED OUT (merge conflict) END -->
             <form id="register-form" class="space-y-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
-                    <input id="fullName" type="text" required placeholder="John Silva"
+                    <input id="fullName" type="text" required placeholder="Admin Name"
                            class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Email Address</label>
-                    <input id="email" type="email" required placeholder="you@example.com"
-                           class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Phone Number</label>
-                    <input id="phone" type="tel" placeholder="077 123 4567"
+                    <input id="email" type="email" required placeholder="admin@example.com"
                            class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
                 </div>
                 <div>
@@ -67,24 +60,9 @@ INCOMING CHANGE COMMENTED OUT (merge conflict) END -->
                     <input id="confirmPassword" type="password" required placeholder="Re-enter password"
                            class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
                 </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Preferred Location (Optional)</label>
-                    <input id="preferredLocation" type="text" placeholder="e.g. Colombo"
-                           class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">What type of Agent are you looking for?</label>
-                    <select id="preferredAgentSpecialization" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white">
-                        <option value="">Any</option>
-                        <option value="Residential">Residential</option>
-                        <option value="Commercial">Commercial</option>
-                        <option value="Luxury">Luxury</option>
-                        <option value="Rental">Rental</option>
-                    </select>
-                </div>
                 <button type="submit"
-                        class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary-dark transition mt-2">
-                    Create Account
+                        class="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition mt-2">
+                    Create Admin Account
                 </button>
             </form>
 
@@ -100,26 +78,25 @@ INCOMING CHANGE COMMENTED OUT (merge conflict) END -->
     <script>
         document.getElementById('register-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const name                         = document.getElementById('fullName').value.trim();
-            const email                        = document.getElementById('email').value.trim();
-            const contactNumber                = document.getElementById('phone').value.trim();
-            const password                     = document.getElementById('password').value;
-            const confirmPassword              = document.getElementById('confirmPassword').value;
-            const preferredLocation            = document.getElementById('preferredLocation').value;
-            const preferredAgentSpecialization = document.getElementById('preferredAgentSpecialization').value;
+            const name    = document.getElementById('fullName').value.trim();
+            const email   = document.getElementById('email').value.trim();
+            const password= document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
 
-            if (password !== confirmPassword) {
-                return showAlert('Passwords do not match', 'error');
-            }
-            if (password.length < 8) {
-                return showAlert('Password must be at least 8 characters', 'error');
-            }
+            if (password !== confirmPassword) return showAlert('Passwords do not match', 'error');
+            if (password.length < 8) return showAlert('Password must be at least 8 characters', 'error');
 
             try {
-                const res = await api.register({ name, email, contactNumber, password, preferredLocation, preferredAgentSpecialization });
+                const res = await api.register({ name, email, password });
                 if (res.success) {
-                    showAlert('Account created! Redirecting to login...', 'success');
-                    setTimeout(() => window.location.href = 'login.html', 1500);
+                    // Mark as admin client-side and persist so admin UI becomes available
+                    const user = res.data || { id: null, name, email };
+                    user.isAdmin = true;
+                    const serialized = JSON.stringify(user);
+                    localStorage.setItem('user', serialized);
+                    sessionStorage.setItem('user', serialized);
+                    showAlert('Admin account created! Redirecting to admin panel...', 'success');
+                    setTimeout(() => window.location.href = 'admin-users.html', 1200);
                 } else {
                     showAlert(res.message || 'Registration failed', 'error');
                 }
