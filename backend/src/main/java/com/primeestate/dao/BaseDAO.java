@@ -16,6 +16,9 @@ import java.sql.SQLException;
  */
 public abstract class BaseDAO<T extends BaseEntity> implements CrudOperations<T> {
 
+/* INCOMING CHANGE COMMENTED OUT (merge conflict) BEGIN
+    // Centralized connection management logic using singleton DBConnection
+INCOMING CHANGE COMMENTED OUT (merge conflict) END */
     protected Connection getConnection() throws SQLException {
         return DBConnection.getInstance().getConnection();
     }

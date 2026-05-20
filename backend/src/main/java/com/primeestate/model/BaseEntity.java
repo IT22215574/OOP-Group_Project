@@ -5,6 +5,9 @@ import java.sql.Timestamp;
 /**
  * OOP - Inheritance: Abstract base class shared by all domain entities.
  * OOP - Encapsulation: Used encapsulation to keep their fields private and expose them through getters and setters.
+/* INCOMING CHANGE COMMENTED OUT (merge conflict) BEGIN
+ * OOP - Encapsulation: Common fields (id, createdAt) are private with getters/setters.
+INCOMING CHANGE COMMENTED OUT (merge conflict) END */
  * OOP - Polymorphism: Abstract methods getDisplayName() and validate() are overridden differently in each subclass.
  */
 public abstract class BaseEntity {

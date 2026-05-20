@@ -3,6 +3,9 @@ async function initAuth() {
     const user = sessionStorage.getItem('user');
     if (!user) return;
 // Checks session and updates navbar auth links
+/* INCOMING CHANGE COMMENTED OUT (merge conflict) BEGIN
+
+INCOMING CHANGE COMMENTED OUT (merge conflict) END */
     const parsed  = JSON.parse(user);
     const navAuth = document.getElementById('nav-auth');
     if (!navAuth) return;
@@ -35,6 +38,15 @@ async function initAuth() {
            class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white text-xs font-bold transition flex-shrink-0">
             ${initials}
         </a>
+/* INCOMING CHANGE COMMENTED OUT (merge conflict) BEGIN
+        const postHref = resolvePostPropertyPath();
+        extraLinks = `<a href="${postHref}" class="text-sm text-accent hover:text-accent-light transition font-medium">Post Property</a>`;
+    }
+
+    navAuth.innerHTML = `
+        ${extraLinks}
+        <span class="text-sm text-gray-200">Hi, ${parsed.fullName.split(' ')[0]}</span>
+INCOMING CHANGE COMMENTED OUT (merge conflict) END */
         <button onclick="logout()"
                 class="text-sm border border-white px-4 py-1.5 rounded-full hover:bg-white hover:text-primary transition">
             Logout
@@ -48,6 +60,8 @@ function resolveProfilePath() {
     return 'pages/profile.html';
 }
 
+/* INCOMING CHANGE COMMENTED OUT (merge conflict) BEGIN
+INCOMING CHANGE COMMENTED OUT (merge conflict) END */
 function resolveAdminPath() {
     const path = window.location.pathname;
     if (path.includes('/pages/admin/')) return 'dashboard.html';
@@ -83,6 +97,8 @@ function resolveMyPropertiesPath() {
     return 'pages/my-properties.html';
 }
 
+/* INCOMING CHANGE COMMENTED OUT (merge conflict) BEGIN
+INCOMING CHANGE COMMENTED OUT (merge conflict) END */
 async function logout() {
     if (!window.confirm('Are you sure you want to log out?')) return;
     try { await api.logout(); } catch (_) {}

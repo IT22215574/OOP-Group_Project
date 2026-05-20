@@ -1,4 +1,6 @@
 /*new db connection */
+/* INCOMING CHANGE COMMENTED OUT (merge conflict) BEGIN
+INCOMING CHANGE COMMENTED OUT (merge conflict) END */
 package com.primeestate.config;
 
 import io.github.cdimascio.dotenv.Dotenv;
@@ -10,6 +12,9 @@ public class DBConnection {
 
     private static final Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
 
+/* INCOMING CHANGE COMMENTED OUT (merge conflict) BEGIN
+    // Constructing the JDBC URL with fallback options from Dotenv
+INCOMING CHANGE COMMENTED OUT (merge conflict) END */
     private static final String URL = "jdbc:mysql://"
             + dotenv.get("DB_HOST", "localhost") + ":"
             + dotenv.get("DB_PORT", "3306") + "/"

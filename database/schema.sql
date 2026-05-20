@@ -47,6 +47,9 @@ CREATE TABLE IF NOT EXISTS appointments (
     property_type       VARCHAR(50),
     appointment_status  ENUM('pending', 'confirmed', 'rescheduled', 'cancelled', 'rejected') DEFAULT 'pending',
     agent_message       TEXT NULL,
+-- INCOMING CHANGE COMMENTED OUT (merge conflict) BEGIN
+--     appointment_status  ENUM('pending', 'confirmed', 'rescheduled', 'cancelled') DEFAULT 'pending',
+-- INCOMING CHANGE COMMENTED OUT (merge conflict) END
     created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id)  REFERENCES users(id)  ON DELETE CASCADE,
     FOREIGN KEY (agent_id) REFERENCES agents(id) ON DELETE CASCADE
@@ -138,3 +141,5 @@ INSERT INTO advertisements (agent_id, property_title, property_type, price, loca
 -- ALTER TABLE appointments
 --     ADD COLUMN IF NOT EXISTS agent_message TEXT NULL AFTER appointment_status,
 --     MODIFY COLUMN appointment_status ENUM('pending','confirmed','rescheduled','cancelled','rejected') DEFAULT 'pending';
+-- INCOMING CHANGE COMMENTED OUT (merge conflict) BEGIN
+-- INCOMING CHANGE COMMENTED OUT (merge conflict) END

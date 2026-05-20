@@ -8,6 +8,9 @@ import java.util.List;
  * MODULE 4 – Property Advertisement
  * OOP - Inheritance: extends BaseEntity (inherits id, createdAt, validate(), getDisplayName())
  * OOP - Encapsulation: Used encapsulation to keep their fields private and expose them through getters and setters.
+/* INCOMING CHANGE COMMENTED OUT (merge conflict) BEGIN
+ * OOP - Encapsulation: all fields private, exposed via getters/setters
+INCOMING CHANGE COMMENTED OUT (merge conflict) END */
  * Connects: agentId (Module 1); imagePaths up to 3 images stored in advertisement_images table
  */
 public class Advertisement extends BaseEntity {
@@ -19,6 +22,9 @@ public class Advertisement extends BaseEntity {
     private String     location;
     private String     description;
     private String     availabilityStatus;
+/* INCOMING CHANGE COMMENTED OUT (merge conflict) BEGIN
+    // List of uploaded image paths (limited to a maximum of 3 per advertisement)
+INCOMING CHANGE COMMENTED OUT (merge conflict) END */
     private List<String> imagePaths;   // up to 3 image paths
 
     // Read-only join field

@@ -35,6 +35,14 @@ import java.util.UUID;
     maxFileSize       = 5 * 1024 * 1024,   // 5MB per image
     maxRequestSize    = 20 * 1024 * 1024   // 20MB total
 )
+/* INCOMING CHANGE COMMENTED OUT (merge conflict) BEGIN
+    // Configured for handling multipart property images (max 5MB per file, 20MB total)
+    @MultipartConfig(
+        fileSizeThreshold = 1024 * 1024,       // 1MB before writing to disk
+        maxFileSize       = 5 * 1024 * 1024,   // 5MB per image
+        maxRequestSize    = 20 * 1024 * 1024   // 20MB total
+    )
+INCOMING CHANGE COMMENTED OUT (merge conflict) END */
 public class AdvertisementServlet extends HttpServlet {
 
     private final AdvertisementDAO advertisementDAO = new AdvertisementDAO();

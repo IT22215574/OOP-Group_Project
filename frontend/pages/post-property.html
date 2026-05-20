@@ -170,6 +170,21 @@
 
                 <!-- Upload error -->
                 <div id="upload-error" class="hidden mt-3 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700"></div>
+<!-- INCOMING CHANGE COMMENTED OUT (merge conflict) BEGIN
+            <!-- Image -->
+            <div class="bg-white rounded-2xl shadow-sm p-6">
+                <h2 class="text-sm font-bold text-gray-700 uppercase tracking-wide mb-4">Property Image</h2>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Image URL</label>
+                    <input id="imageUrl" type="url" placeholder="https://example.com/photo.jpg"
+                           class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                    <p class="text-xs text-gray-400 mt-1">Paste a direct link to the property photo</p>
+                </div>
+                <div id="img-preview" class="hidden mt-4">
+                    <img id="preview-img" src="" alt="Preview"
+                         class="w-full h-48 object-cover rounded-xl border border-gray-100" />
+                </div>
+INCOMING CHANGE COMMENTED OUT (merge conflict) END -->
             </div>
 
             <div class="flex gap-4">
@@ -306,6 +321,16 @@
             el.textContent = msg;
             el.classList.remove('hidden');
         }
+<!-- INCOMING CHANGE COMMENTED OUT (merge conflict) BEGIN
+        // Image preview
+        document.getElementById('imageUrl').addEventListener('input', (e) => {
+            const url = e.target.value.trim();
+            const preview = document.getElementById('img-preview');
+            const img     = document.getElementById('preview-img');
+            if (url) { img.src = url; preview.classList.remove('hidden'); }
+            else     { preview.classList.add('hidden'); }
+        });
+INCOMING CHANGE COMMENTED OUT (merge conflict) END -->
 
         document.getElementById('post-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -325,6 +350,22 @@
                 imageUrl:         uploadedImages[0] || '',
                 additionalImages: uploadedImages.slice(1),
                 status:           'available',
+<!-- INCOMING CHANGE COMMENTED OUT (merge conflict) BEGIN
+                title:       document.getElementById('title').value.trim(),
+                description: document.getElementById('description').value.trim(),
+                type:        document.getElementById('type').value,
+                category:    document.getElementById('category').value,
+                price:       parseFloat(document.getElementById('price').value),
+                bedrooms:    parseInt(document.getElementById('bedrooms').value) || 0,
+                bathrooms:   parseInt(document.getElementById('bathrooms').value) || 0,
+                areaSqft:    parseInt(document.getElementById('areaSqft').value) || 0,
+                address:     document.getElementById('address').value.trim(),
+                city:        document.getElementById('city').value.trim(),
+                state:       document.getElementById('state').value.trim(),
+                zipCode:     document.getElementById('zipCode').value.trim(),
+                imageUrl:    document.getElementById('imageUrl').value.trim(),
+                status:      'available',
+INCOMING CHANGE COMMENTED OUT (merge conflict) END -->
             };
 
             if (!data.title)    return showAlert('Property title is required', 'error');
