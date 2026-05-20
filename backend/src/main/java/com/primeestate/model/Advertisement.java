@@ -11,7 +11,7 @@ import java.util.List;
 /* INCOMING CHANGE COMMENTED OUT (merge conflict) BEGIN
  * OOP - Encapsulation: all fields private, exposed via getters/setters
 INCOMING CHANGE COMMENTED OUT (merge conflict) END */
- * Connects: agentId (Module 1); imagePaths up to 3 images stored in advertisement_images table
+ /* Connects: agentId (Module 1); imagePaths up to 3 images stored in advertisement_images table
  */
 public class Advertisement extends BaseEntity {
 

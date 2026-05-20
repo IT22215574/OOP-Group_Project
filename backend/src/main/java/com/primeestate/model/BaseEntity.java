@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 /* INCOMING CHANGE COMMENTED OUT (merge conflict) BEGIN
  * OOP - Encapsulation: Common fields (id, createdAt) are private with getters/setters.
 INCOMING CHANGE COMMENTED OUT (merge conflict) END */
- * OOP - Polymorphism: Abstract methods getDisplayName() and validate() are overridden differently in each subclass.
+ /* OOP - Polymorphism: Abstract methods getDisplayName() and validate() are overridden differently in each subclass.
  */
 public abstract class BaseEntity {
 
