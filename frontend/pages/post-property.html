@@ -321,17 +321,6 @@ INCOMING CHANGE COMMENTED OUT (merge conflict) END -->
             el.textContent = msg;
             el.classList.remove('hidden');
         }
-<!-- INCOMING CHANGE COMMENTED OUT (merge conflict) BEGIN
-        // Image preview
-        document.getElementById('imageUrl').addEventListener('input', (e) => {
-            const url = e.target.value.trim();
-            const preview = document.getElementById('img-preview');
-            const img     = document.getElementById('preview-img');
-            if (url) { img.src = url; preview.classList.remove('hidden'); }
-            else     { preview.classList.add('hidden'); }
-        });
-INCOMING CHANGE COMMENTED OUT (merge conflict) END -->
-
         document.getElementById('post-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const data = {
@@ -350,22 +339,6 @@ INCOMING CHANGE COMMENTED OUT (merge conflict) END -->
                 imageUrl:         uploadedImages[0] || '',
                 additionalImages: uploadedImages.slice(1),
                 status:           'available',
-<!-- INCOMING CHANGE COMMENTED OUT (merge conflict) BEGIN
-                title:       document.getElementById('title').value.trim(),
-                description: document.getElementById('description').value.trim(),
-                type:        document.getElementById('type').value,
-                category:    document.getElementById('category').value,
-                price:       parseFloat(document.getElementById('price').value),
-                bedrooms:    parseInt(document.getElementById('bedrooms').value) || 0,
-                bathrooms:   parseInt(document.getElementById('bathrooms').value) || 0,
-                areaSqft:    parseInt(document.getElementById('areaSqft').value) || 0,
-                address:     document.getElementById('address').value.trim(),
-                city:        document.getElementById('city').value.trim(),
-                state:       document.getElementById('state').value.trim(),
-                zipCode:     document.getElementById('zipCode').value.trim(),
-                imageUrl:    document.getElementById('imageUrl').value.trim(),
-                status:      'available',
-INCOMING CHANGE COMMENTED OUT (merge conflict) END -->
             };
 
             if (!data.title)    return showAlert('Property title is required', 'error');
